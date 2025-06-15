@@ -6,25 +6,42 @@ import { Queue } from "./queue.js";
 import { Grid, DIRECTIONS } from "./tiles.js";
 
 export class Wave extends Grid {
-    constructor(rows, cols, tileset) {
-        super(rows, cols, (_i, _j) => {
+    constructor(rows, cols, tileset, wrap_rows, wrap_cols) {
+        super(wrap_rows ? rows : rows + 1, wrap_cols ? cols : cols + 1, (i, j) => {
+            if (i === rows || j === cols) return [null];
+
             const arr = [];
-            for (let i = 0; i < tileset.length; i++) {
+            for (let i = 0; i < tileset.tiles.length; i++) {
                 arr.push(i);
             }
             return arr;
         });
 
         this.tileset = tileset;
+
+        const borders = [];
+        if(!wrap_rows) {
+            for (let i = 0; i < cols; i++) {
+                borders.push([rows, i]);
+            }
+        }
+        if(!wrap_cols) {
+            for (let i = 0; i < rows; i++) {
+                borders.push([i, cols]);
+            }
+        }
+        this.propagate(borders);
+
     }
 
     // Calcola la Shannon entropy della tile
     tile_entropy(row, col) {
         const tile = this.grid[row][col];
-        const weights_sum = tile.map(t => this.tileset[t].weight).reduce((a, e) => a+e);
+        const weights_sum = tile.map(t => (t === null) ? 0 : this.tileset.tiles[t].weight).reduce((a, e) => a+e);
 
         const entropy = -tile.map(t => {
-            const p = this.tileset[t].weight / weights_sum;
+            if (t === null) return 0;
+            const p = this.tileset.tiles[t].weight / weights_sum;
             return p * Math.log2(p);
         }).reduce((a, e) => a + e);
 
@@ -61,47 +78,50 @@ export class Wave extends Grid {
     observe(row, col) {
         const tile = this.grid[row][col];
 
-        const weights_sum = tile.map(t => this.tileset[t].weight).reduce((a, e) => a+e);
+        const weights_sum = tile.map(t => this.tileset.tiles[t].weight).reduce((a, e) => a+e);
         const choice = Math.floor(Math.random() * weights_sum);
 
         let acc = 0;
         let i = 0;
         for (; i < tile.length; i++) {
-            acc += this.tileset[tile[i]].weight;
+            acc += this.tileset.tiles[tile[i]].weight;
             if (acc > choice) break;
         }
 
-        //console.log(tile.map(t => this.tileset[t].weight), weights_sum, choice, i);
+        //console.log(tile.map(t => this.tileset.tiles[t].weight), weights_sum, choice, i);
         //console.log(acc, i, choice, weights_sum);
         this.grid[row][col] = [tile[i]];
 
         //console.log("observed", tile[i]);
     }
 
-    // Funzione di propagazione. Parte dalla prima tile modificata ed esegue un BFS sui vicini escludendone le incompatibilità
-    propagate(row, col) {
+    // Funzione di propagazione. Parte da una prima queue di tiles da aggiornare ed esegue un BFS sui vicini escludendone le incompatibilità
+    propagate(rowcols) {
         // Coda necessaria per il BFS
-        const queue = new Queue();
-        queue.enqueue([row, col]);
+        const queue = new Queue(rowcols);
 
         while(!queue.isEmpty()) {
             const tile_coords = queue.dequeue();
-            //console.log("propagating", tile_coords);
+            // console.log("propagating", tile_coords);
             const tile = this.grid[tile_coords[0]][tile_coords[1]];
+            // console.log(tile);
 
             // Per i 4 vicini
             for (let i = 0; i < 4; i++) {
                 const neigh_row = this.wrapping_row(tile_coords[0] + DIRECTIONS[i][0]);
                 const neigh_col = this.wrapping_col(tile_coords[1] + DIRECTIONS[i][1]);
+                // console.log([neigh_row, neigh_col]);
 
                 let changed = false;
 
                 // Filtra le possibilità del vicino
                 this.grid[neigh_row][neigh_col] = this.grid[neigh_row][neigh_col].filter((t) => {
+                    // console.log("neigh", t);
 
                     // Cerca almeno una possibilità della propria tile compatibile con quella del vicino attualmente in esame
                     for (let j = 0; j < tile.length; j++) {
-                        const compatibilities = this.tileset[tile[j]].compatible[i];
+                        // console.log(j);
+                        const compatibilities = (tile[j] === null) ? this.tileset.border[i] : this.tileset.tiles[tile[j]].compatible[i];
                         if(compatibilities.includes(t)) {
                             return true;
                         }

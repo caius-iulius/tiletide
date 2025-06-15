@@ -13,7 +13,7 @@ function male_print_grid(grid) {
     for (let i = 0; i < grid.rows; i++) {
         let s = "";
         for (let j = 0; j < grid.cols; j++) {
-            s += grid.grid[i][j].toString();// TODO: GESTIONE DEGLI EDGE
+            s += (grid.grid[i][j] === null) ? '█' : grid.grid[i][j].toString();// TODO: GESTIONE DEGLI EDGE
         }
         console.log(s);
     }
@@ -26,7 +26,8 @@ function male_print_wave(wave) {
             switch(wave.grid[i][j].length) {
                 case 0: s += "X"; break;
                 case 1:
-                    s += wave.tileset[wave.grid[i][j][0]].center.toString();
+                    const t = wave.grid[i][j][0];
+                    s += (t === null) ? '█' : wave.tileset.tiles[t].center.toString();
                     break;
                 default: s += "?";
             }
@@ -46,7 +47,9 @@ function male_print_wave_multi(wave) {
 }
 
 
-function male_print_tileset(tiles) {
+function male_print_tileset(tileset) {
+    const tiles = tileset.tiles;
+    console.log("BORDERS", tileset.border);
     for (let i = 0; i < tiles.length; i++) {
         console.log("TILE", i, "weight", tiles[i].weight, "center", tiles[i].center);
         male_print_grid(tiles[i]);
@@ -55,31 +58,37 @@ function male_print_tileset(tiles) {
     }
 }
 
-//const grid = new Grid(6, 6, (i, j) => B_ARR[CONCENTRIC(6,i,j)]);
-const ARR = [
-    ['#','#','#','#'],
-    ['#','.','.','.'],
-    ['#','.','o','.'],
-    ['#','.','.','.']
-];
-const grid = new Grid(4, 4, (i, j) => ARR[i][j]);
-console.dir(grid, { depth: null });
+const grid = new Grid(6, 6, (i, j) => B_ARR[CONCENTRIC(6,i,j)]);
+// const ARR = [
+//     ['#','#','#','#'],
+//     ['#','.','.','.'],
+//     ['#','.','o','.'],
+//     ['#','.','.','.']
+// ];
+// const grid = new Grid(4, 4, (i, j) => ARR[i][j]);
+// console.dir(grid, { depth: null });
 
-const tiles = generate_tileset(grid, 2, 2, true, true);
+const tiles = generate_tileset(grid, 3, 3, false, false);
 male_print_tileset(tiles);
 
 let i = 0;
-const wave = new Wave(30, 30, tiles);
+const wave = new Wave(5, 5, tiles, false, false);
+
+male_print_wave_multi(wave);
+male_print_wave(wave);
+
+// while (true) { }
+
 let choice = wave.choose();
 while(choice) {
     i++;
     //console.log(choice, wave.grid);
     wave.observe(...choice);
-    male_print_wave(wave);
+    // male_print_wave(wave);
     //male_print_wave_multi(wave);
-    console.log();
+    // console.log();
 
-    const success = wave.propagate(...choice);
+    const success = wave.propagate([choice]);
     if (!success) {
         male_print_wave_multi(wave);
         console.log();
@@ -91,5 +100,6 @@ while(choice) {
 
 }
 male_print_wave(wave);
+// console.dir(wave.grid, { depth: null });
 
 console.log("steps:", i);

@@ -1,6 +1,7 @@
 export class Queue {
-    constructor() {
-        this.buf = [];
+    constructor(init) {
+        if (init == undefined) init = [];
+        this.buf = init;
     }
 
     enqueue(elem) {

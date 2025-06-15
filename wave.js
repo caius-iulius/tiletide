@@ -1,5 +1,3 @@
-// TODO: GESTIONE DEGLI EDGE
-
 "use strict";
 
 import { Queue } from "./queue.js";
@@ -11,7 +9,7 @@ export class Wave extends Grid {
             if (i === rows || j === cols) return [null];
 
             const arr = [];
-            for (let i = 0; i < tileset.tiles.length; i++) {
+            for (let i = 0; i < tileset.size; i++) {
                 arr.push(i);
             }
             return arr;
@@ -37,11 +35,10 @@ export class Wave extends Grid {
     // Calcola la Shannon entropy della tile
     tile_entropy(row, col) {
         const tile = this.grid[row][col];
-        const weights_sum = tile.map(t => (t === null) ? 0 : this.tileset.tiles[t].weight).reduce((a, e) => a+e);
+        const weights_sum = tile.map(t => this.tileset.get_weight(t)).reduce((a, e) => a+e);
 
         const entropy = -tile.map(t => {
-            if (t === null) return 0;
-            const p = this.tileset.tiles[t].weight / weights_sum;
+            const p = this.tileset.get_weight(t) / weights_sum;
             return p * Math.log2(p);
         }).reduce((a, e) => a + e);
 
@@ -78,13 +75,13 @@ export class Wave extends Grid {
     observe(row, col) {
         const tile = this.grid[row][col];
 
-        const weights_sum = tile.map(t => this.tileset.tiles[t].weight).reduce((a, e) => a+e);
+        const weights_sum = tile.map(t => this.tileset.get_weight(t)).reduce((a, e) => a+e);
         const choice = Math.floor(Math.random() * weights_sum);
 
         let acc = 0;
         let i = 0;
         for (; i < tile.length; i++) {
-            acc += this.tileset.tiles[tile[i]].weight;
+            acc += this.tileset.get_weight(tile[i]);
             if (acc > choice) break;
         }
 
@@ -108,8 +105,8 @@ export class Wave extends Grid {
 
             // Per i 4 vicini
             for (let i = 0; i < 4; i++) {
-                const neigh_row = this.wrapping_row(tile_coords[0] + DIRECTIONS[i][0]);
-                const neigh_col = this.wrapping_col(tile_coords[1] + DIRECTIONS[i][1]);
+                const neigh_row = this.wrap_row(tile_coords[0] + DIRECTIONS[i][0]);
+                const neigh_col = this.wrap_col(tile_coords[1] + DIRECTIONS[i][1]);
                 // console.log([neigh_row, neigh_col]);
 
                 let changed = false;
@@ -120,9 +117,7 @@ export class Wave extends Grid {
 
                     // Cerca almeno una possibilità della propria tile compatibile con quella del vicino attualmente in esame
                     for (let j = 0; j < tile.length; j++) {
-                        // console.log(j);
-                        const compatibilities = (tile[j] === null) ? this.tileset.border[i] : this.tileset.tiles[tile[j]].compatible[i];
-                        if(compatibilities.includes(t)) {
+                        if(this.tileset.get_compatibles(tile[j], i).includes(t)) {
                             return true;
                         }
                     }

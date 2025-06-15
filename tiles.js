@@ -1,9 +1,5 @@
 "use strict";
 
-function wrapping_idx(i, n) {
-    return (i + n) % n;
-}
-
 export class Grid {
     constructor(rows, cols, gen) {
         if(!gen) {
@@ -25,19 +21,22 @@ export class Grid {
         }
     }
 
-    wrapping_row(row) {
-        return wrapping_idx(row, this.rows);
+    wrap_row(row) {
+        return (row + this.rows) % this.rows;
     }
 
-    wrapping_col(col) {
-        return wrapping_idx(col, this.cols);
+    wrap_col(col) {
+        return (col + this.cols) % this.cols;
     }
 
     get_tile(base_row, base_col, rows, cols, wrap_rows, wrap_cols) {
         const grid = new Tile(rows, cols, (i, j) => {
-            const wrap_res = this.grid[this.wrapping_row(base_row + i)][this.wrapping_col(base_col + j)];
-            if (!wrap_rows && (base_row + i < 0 || base_row + i >= this.rows) || !wrap_cols && (base_col + j < 0 || base_col + j >= this.cols)) {
-                console.log("AAA");
+            const row = base_row + i;
+            const col = base_col + j;
+
+            const wrap_res = this.grid[this.wrap_row(row)][this.wrap_col(col)];
+            if (!wrap_rows && (row < 0 || row >= this.rows)
+            ||  !wrap_cols && (col < 0 || col >= this.cols)) {
                 return null;
             }
             return wrap_res;
@@ -47,13 +46,8 @@ export class Grid {
     }
 
     get_tiles(rows, cols, wrap_rows, wrap_cols) {
-        const row_bias = true ? Math.floor(rows / 2) : 0;
-        const col_bias = true ? Math.floor(cols / 2) : 0;
-        const tile_rows = this.rows - (true ? 0 : rows - 1);
-        const tile_cols = this.cols - (true ? 0 : cols - 1);
-
-        return new Grid(tile_rows, tile_cols, (i, j) => {
-            return this.get_tile(i - row_bias, j - col_bias, rows, cols, wrap_rows, wrap_cols);
+        return new Grid(this.rows, this.cols, (i, j) => {
+            return this.get_tile(i - Math.floor(rows / 2), j - Math.floor(cols / 2), rows, cols, wrap_rows, wrap_cols);
         });
     }
 }
@@ -88,7 +82,7 @@ function compare_tiles(tile_a, tile_b, row_offset, col_offset) {
     return true;
 }
 
-export function extract_tiles_from_grid(tile_grid) {
+function extract_tiles_from_grid(tile_grid) {
     const tiles = [];
     const borders = [[null], [null], [null], [null]];
 
@@ -114,37 +108,49 @@ export function extract_tiles_from_grid(tile_grid) {
     return [tiles, borders];
 }
 
-function build_adjacency_lists(tiles, borders) {
-    for (let i = 0; i < tiles.length; i++) {
-        if (borders[UP].includes(i)) tiles[i].compatible[DOWN].push(null);
-        if (borders[DOWN].includes(i)) tiles[i].compatible[UP].push(null);
-        if (borders[LEFT].includes(i)) tiles[i].compatible[RIGHT].push(null);
-        if (borders[RIGHT].includes(i)) tiles[i].compatible[LEFT].push(null);
+export class Tileset {
+    constructor(grid, rows, cols, wrap_rows, wrap_cols) {
+        const tile_grid = grid.get_tiles(rows, cols, wrap_rows, wrap_cols);
+        const tiles_borders = extract_tiles_from_grid(tile_grid);
 
-        for (let j = 0; j < tiles.length; j++) {
-            if(compare_tiles(tiles[i], tiles[j], 0, 1)) {
-                tiles[i].compatible[RIGHT].push(j);
-                tiles[j].compatible[LEFT].push(i);
-            }
+        this.tiles = tiles_borders[0];
+        this.border = tiles_borders[1];
+        this.wrap_rows = wrap_rows;
+        this.wrap_cols = wrap_cols;
 
-            if(compare_tiles(tiles[i], tiles[j], 1, 0)) {
-                tiles[i].compatible[DOWN].push(j);
-                tiles[j].compatible[UP].push(i);
+        this.build_adjacency_lists();
+    }
+
+    build_adjacency_lists() {
+        for (let i = 0; i < this.tiles.length; i++) {
+            if (this.border[UP].includes(i)) this.tiles[i].compatible[DOWN].push(null);
+            if (this.border[DOWN].includes(i)) this.tiles[i].compatible[UP].push(null);
+            if (this.border[LEFT].includes(i)) this.tiles[i].compatible[RIGHT].push(null);
+            if (this.border[RIGHT].includes(i)) this.tiles[i].compatible[LEFT].push(null);
+
+            for (let j = 0; j < this.tiles.length; j++) {
+                if(compare_tiles(this.tiles[i], this.tiles[j], 0, 1)) {
+                    this.tiles[i].compatible[RIGHT].push(j);
+                    this.tiles[j].compatible[LEFT].push(i);
+                }
+
+                if(compare_tiles(this.tiles[i], this.tiles[j], 1, 0)) {
+                    this.tiles[i].compatible[DOWN].push(j);
+                    this.tiles[j].compatible[UP].push(i);
+                }
             }
         }
     }
 
-    //TODO non necessario perché muta
-    return tiles;
-}
+    get_compatibles(idx, dir) {
+        return (idx === null) ? this.border[dir] : this.tiles[idx].compatible[dir];
+    }
 
-export function generate_tileset(grid, rows, cols, wrap_rows, wrap_cols) {
-    const tile_grid = grid.get_tiles(rows, cols, wrap_rows, wrap_cols);
-    const tiles_borders = extract_tiles_from_grid(tile_grid);
-    build_adjacency_lists(...tiles_borders);
+    get_weight(idx) {
+        return (idx === null) ? 0 : this.tiles[idx].weight;
+    }
 
-    return {
-        tiles: tiles_borders[0],
-        border: tiles_borders[1]
+    get size() {
+        return this.tiles.length;
     }
 }

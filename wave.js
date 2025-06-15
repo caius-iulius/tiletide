@@ -18,6 +18,7 @@ export class Wave extends Grid {
         this.tileset = tileset;
     }
 
+    // Calcola la Shannon entropy della tile
     tile_entropy(row, col) {
         const tile = this.grid[row][col];
         const weights_sum = tile.map(t => this.tileset[t].weight).reduce((a, e) => a+e);
@@ -30,6 +31,7 @@ export class Wave extends Grid {
         return entropy;
     }
 
+    // Sceglie una tile in base alla Shannon entropy
     choose() {
         let arr = [];
         let ent = +Infinity;
@@ -55,6 +57,7 @@ export class Wave extends Grid {
         return coord;
     }
 
+    // Osserva (e collassa) una tile
     observe(row, col) {
         const tile = this.grid[row][col];
 
@@ -75,7 +78,9 @@ export class Wave extends Grid {
         //console.log("observed", tile[i]);
     }
 
+    // Funzione di propagazione. Parte dalla prima tile modificata ed esegue un BFS sui vicini escludendone le incompatibilità
     propagate(row, col) {
+        // Coda necessaria per il BFS
         const queue = new Queue();
         queue.enqueue([row, col]);
 
@@ -84,16 +89,17 @@ export class Wave extends Grid {
             //console.log("propagating", tile_coords);
             const tile = this.grid[tile_coords[0]][tile_coords[1]];
 
+            // Per i 4 vicini
             for (let i = 0; i < 4; i++) {
-                const neigh_row = tile_coords[0] + DIRECTIONS[i][0];
-                const neigh_col = tile_coords[1] + DIRECTIONS[i][1];
-
-                if (neigh_col < 0 || neigh_row < 0 || neigh_col >= this.cols || neigh_row >= this.rows)
-                    continue;
+                const neigh_row = this.wrapping_row(tile_coords[0] + DIRECTIONS[i][0]);
+                const neigh_col = this.wrapping_col(tile_coords[1] + DIRECTIONS[i][1]);
 
                 let changed = false;
 
+                // Filtra le possibilità del vicino
                 this.grid[neigh_row][neigh_col] = this.grid[neigh_row][neigh_col].filter((t) => {
+
+                    // Cerca almeno una possibilità della propria tile compatibile con quella del vicino attualmente in esame
                     for (let j = 0; j < tile.length; j++) {
                         const compatibilities = this.tileset[tile[j]].compatible[i];
                         if(compatibilities.includes(t)) {
@@ -101,10 +107,12 @@ export class Wave extends Grid {
                         }
                     }
 
+                    // Se arrivo qui la possibilità del vicino esaminata non è compatibile
                     changed = true;
                     return false;
                 })
 
+                // Se ho escluso qualcosa controllo una possibile contradizione, poi richiedo la propagazione del cambiamento
                 if(changed) {
                     if(this.grid[neigh_row][neigh_col].length === 0) {
                         console.log("contradiction with", [neigh_row, neigh_col]);

@@ -1,3 +1,5 @@
+"use strict";
+
 export class Queue {
     constructor(init) {
         if (init == undefined) init = [];

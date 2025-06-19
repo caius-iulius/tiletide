@@ -67,11 +67,8 @@ const ARR = [
     [0,1,2,1],
     [0,1,1,1]
 ];
-// const grid = new Grid(4, 4, (i, j) => ARR[i][j]);
-// console.dir(grid, { depth: null });
 
 const tiles = new Tileset(grid, 3, 3, true, true);
-male_print_tileset(tiles);
 
 const grid2 = new Grid(4, 4, (i, j) => ARR[i][j]);
 const tiles2 = new Tileset(grid2, 2, 2, true, true);
@@ -101,44 +98,26 @@ const KNOT = [
 ]
 const grid4 = new Grid(7, 7, (i, j) => KNOT[i][j]);
 const tiles4 = new Tileset(grid4, 3, 3, true, true);
-/*
-let i = 0;
-const wave = new Wave(5, 5, tiles);
 
-male_print_wave_multi(wave);
-male_print_wave(wave);
-
-// while (true) { }
-
-let choice = wave.choose();
-while(choice) {
-    i++;
-    //console.log(choice, wave.grid);
-    wave.observe(...choice);
-    // male_print_wave(wave);
-    //male_print_wave_multi(wave);
-    // console.log();
-
-    const success = wave.propagate([choice]);
-    if (!success) {
-        male_print_wave_multi(wave);
-        console.log();
-
-        break;
-    }
-
-    choice = wave.choose();
-
-}
-male_print_wave(wave);
-// console.dir(wave.grid, { depth: null });
-
-console.log("steps:", i);*/
+const CURVES = [
+    [5,5,5,5,5,5,5,5,5],
+    [5,6,6,6,6,6,6,6,5],
+    [5,6,6,5,5,5,6,6,5],
+    [5,6,5,5,5,5,5,6,5],
+    [5,6,5,5,5,5,5,6,5],
+    [5,6,5,5,5,5,5,6,5],
+    [5,6,6,5,5,5,6,6,5],
+    [5,6,6,6,6,6,6,6,5],
+    [5,5,5,5,5,5,5,5,5]
+]
+const grid5 = new Grid(9, 9, (i, j) => CURVES[i][j]);
+const tiles5 = new Tileset(grid5, 3, 3, true, true);
 
 // WEB
 import { Color, WaveCanvas } from "./color.js";
 const palette = [
     new Color(0, 0, 0), // black
+    new Color(255, 255, 255), // white
     new Color(255, 0, 0), // red
     new Color(0, 255, 0), // green
     new Color(0, 0, 255), // blue
@@ -150,27 +129,34 @@ const palette = [
 ]
 
 const canvas = document.getElementById("wave-canvas");
-const wave = new WaveCanvas(50, 50, tiles4, canvas, palette);
+
+const wave = new WaveCanvas(50, 50, tiles2, canvas, palette);
 wave.render();
 
 function render_step() {
     let choice = wave.choose();
-    if (!choice) return;
+    if (!choice) return false;
 
     wave.observe(...choice);
 
     const success = wave.propagate([choice]);
+
+    wave.render();
+
     if (!success) {
         male_print_wave_multi(wave);
         console.log();
 
-        return;
+        return false;
     }
 
-    console.log("rendering");
-    wave.render();
-
-    setTimeout(render_step, 10);
+    return true;
 }
 
-render_step();
+function render() {
+    if(render_step()) {
+        setTimeout(render, 0);
+    }
+}
+
+render();

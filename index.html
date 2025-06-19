@@ -5,11 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="./css/style.css">
-    <script type="module" src="./js/test.js"></script>
+    <script type="module" src="./js/index.js"></script>
 </head>
 <body class="column">
     <div id="controls">
+        <p>
         CONTROLLI
+        </p>
+
+        <div>
+            <label for="num-rows">Righe:</label>
+            <input type="number" id="num-rows" min="1" max="300" value="10">
+            <label for="num-cols">Colonne:</label>
+            <input type="number" id="num-cols" min="1" max="300" value="10">
+        </div>
+
+        <div>
+            <button id="play-button">PLAY</button>
+            <button id="pause-button" disabled>PAUSE</button>
+            <button id="step-button" disabled>STEP</button>
+            <button id="stop-button" disabled>STOP</button>
+        </div>
+
+        <label for="speed-slider">Velocità:</label>
+        <input type="range" id="speed-slider" min="0" max="1000" value="500">
     </div>
     <div id="slate">
         <canvas id="wave-canvas" width="600" height="600"></canvas>

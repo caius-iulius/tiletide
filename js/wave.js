@@ -12,7 +12,13 @@ export class Wave extends Grid {
             for (let i = 0; i < tileset.size; i++) {
                 arr.push(i);
             }
-            return arr;
+
+            const entropy = Wave.entropy(tileset, arr);
+
+            return {
+                possibilities: arr,
+                entropy: entropy
+            };
         });
 
         this.tileset = tileset;
@@ -28,17 +34,16 @@ export class Wave extends Grid {
                 borders.push([i, cols]);
             }
         }
-        this.propagate(borders);
 
+        this.propagate(borders);
     }
 
-    // Calcola la Shannon entropy della tile
-    tile_entropy(row, col) {
-        const tile = this.grid[row][col];
-        const weights_sum = tile.map(t => this.tileset.get_weight(t)).reduce((a, e) => a+e);
+    // Calcola la Shannon entropy delle possibilità di una tile
+    static entropy(tileset, possibilities) {
+        const weights_sum = possibilities.map(t => tileset.get_weight(t)).reduce((a, e) => a+e);
 
-        const entropy = -tile.map(t => {
-            const p = this.tileset.get_weight(t) / weights_sum;
+        const entropy = -possibilities.map(t => {
+            const p = tileset.get_weight(t) / weights_sum;
             return p * Math.log2(p);
         }).reduce((a, e) => a + e);
 
@@ -52,7 +57,7 @@ export class Wave extends Grid {
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
-                const thisent = this.tile_entropy(i, j);
+                const thisent = this.grid[i][j].entropy;
                 if (thisent === 0) continue;
 
                 if(thisent < ent) {
@@ -73,17 +78,18 @@ export class Wave extends Grid {
     observe(row, col) {
         const tile = this.grid[row][col];
 
-        const weights_sum = tile.map(t => this.tileset.get_weight(t)).reduce((a, e) => a+e);
+        const weights_sum = tile.possibilities.map(t => this.tileset.get_weight(t)).reduce((a, e) => a+e);
         const choice = Math.floor(Math.random() * weights_sum);
 
         let acc = 0;
         let i = 0;
-        for (; i < tile.length; i++) {
-            acc += this.tileset.get_weight(tile[i]);
+        for (; i < tile.possibilities.length; i++) {
+            acc += this.tileset.get_weight(tile.possibilities[i]);
             if (acc > choice) break;
         }
 
-        this.grid[row][col] = [tile[i]];
+        tile.possibilities = [tile.possibilities[i]];
+        tile.entropy = 0;
     }
 
     // Funzione di propagazione. Parte da una prima queue di tiles da aggiornare ed esegue un BFS sui vicini escludendone le incompatibilità
@@ -93,21 +99,22 @@ export class Wave extends Grid {
 
         while(!queue.isEmpty()) {
             const tile_coords = queue.dequeue();
-            const tile = this.grid[tile_coords[0]][tile_coords[1]];
+            const tile_possibilities = this.grid[tile_coords[0]][tile_coords[1]].possibilities;
 
             // Per i 4 vicini
             for (let i = 0; i < 4; i++) {
                 const neigh_row = this.wrap_row(tile_coords[0] + DIRECTIONS[i][0]);
                 const neigh_col = this.wrap_col(tile_coords[1] + DIRECTIONS[i][1]);
+                const neigh_tile = this.grid[neigh_row][neigh_col];
 
                 let changed = false;
 
                 // Filtra le possibilità del vicino
-                this.grid[neigh_row][neigh_col] = this.grid[neigh_row][neigh_col].filter((t) => {
+                neigh_tile.possibilities = neigh_tile.possibilities.filter((t) => {
 
                     // Cerca almeno una possibilità della propria tile compatibile con quella del vicino attualmente in esame
-                    for (let j = 0; j < tile.length; j++) {
-                        if(this.tileset.get_compatibles(tile[j], i).includes(t)) {
+                    for (let j = 0; j < tile_possibilities.length; j++) {
+                        if(this.tileset.get_compatibles(tile_possibilities[j], i).includes(t)) {
                             return true;
                         }
                     }
@@ -119,10 +126,12 @@ export class Wave extends Grid {
 
                 // Se ho escluso qualcosa controllo una possibile contradizione, poi richiedo la propagazione del cambiamento
                 if(changed) {
-                    if(this.grid[neigh_row][neigh_col].length === 0) {
+                    if(neigh_tile.possibilities.length === 0) {
                         console.log("contradiction with", [neigh_row, neigh_col]);
                         return false;
                     }
+                    // Ricalcolo l'entropia della tile vicina
+                    neigh_tile.entropy = Wave.entropy(this.tileset, neigh_tile.possibilities);
                     queue.enqueue([neigh_row, neigh_col]);
                 }
             }

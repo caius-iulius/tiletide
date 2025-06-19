@@ -36,6 +36,8 @@ export class Wave extends Grid {
         }
 
         this.propagate(borders);
+
+        this.initial_entropy = this.total_entropy();
     }
 
     // Calcola la Shannon entropy delle possibilità di una tile
@@ -138,5 +140,17 @@ export class Wave extends Grid {
         }
 
         return true;
+    }
+
+    total_entropy() {
+        let entropy = 0;
+
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                entropy += this.grid[i][j].entropy;
+            }
+        }
+
+        return entropy;
     }
 }

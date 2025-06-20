@@ -96,6 +96,8 @@ export class Wave extends Grid {
 
         tile.possibilities = [tile.possibilities[i]];
         tile.entropy = 0;
+
+        this.update_cell(row, col);
     }
 
     // Funzione di propagazione. Parte da una prima queue di tiles da aggiornare ed esegue un BFS sui vicini escludendone le incompatibilità
@@ -132,6 +134,8 @@ export class Wave extends Grid {
 
                 // Se ho escluso qualcosa controllo una possibile contradizione, poi richiedo la propagazione del cambiamento
                 if(changed) {
+                    this.update_cell(neigh_row, neigh_col);
+
                     if(neigh_tile.possibilities.length === 0) {
                         console.log("contradiction with", [neigh_row, neigh_col]);
                         return false;
@@ -157,6 +161,8 @@ export class Wave extends Grid {
 
         return entropy;
     }
+
+    update_cell(_row, _col) { }
 }
 
 export class WaveCanvas extends Wave {
@@ -174,36 +180,39 @@ export class WaveCanvas extends Wave {
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    render() {
+    update_cell(row, col) {
         const ctx = this.canvas.getContext("2d");
+        const tile = this.grid[row][col].possibilities;
+
+        if (tile.length === 0) {
+            ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
+        } else {
+            const wc = tile.map((t) => {
+                return [this.tileset.get_weight(t), this.palette[this.tileset.tiles[t].center]];
+            });
+
+            const color = Color.weighed_sum(wc);
+            ctx.fillStyle = color.style;
+        }
+
+        const tile_size = Math.min(
+            this.canvas.width / this.cols,
+            this.canvas.height / this.rows
+        );
+
+        const width_bias = (this.canvas.width - tile_size * this.cols) / 2;
+        const height_bias = (this.canvas.height - tile_size * this.rows) / 2;
+
+        ctx.fillRect(width_bias + col * tile_size, height_bias + row * tile_size, tile_size, tile_size);
+    }
+
+    render() {
         const rows = this.tileset.wrap_rows ? this.rows : this.rows - 1;
         const cols = this.tileset.wrap_cols ? this.cols : this.cols - 1;
 
-        const tile_size = Math.min(
-            this.canvas.width / cols,
-            this.canvas.height / rows
-        );
-
-        const width_bias = (this.canvas.width - tile_size * cols) / 2;
-        const height_bias = (this.canvas.height - tile_size * rows) / 2;
-
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                const tile = this.grid[i][j].possibilities;
-
-                if (tile.length === 0) {
-                    ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
-                } else {
-                    const wc = tile.map((t) => {
-                        return [this.tileset.get_weight(t), this.palette[this.tileset.tiles[t].center]];
-                    });
-
-                    const color = Color.weighed_sum(wc);
-
-                    ctx.fillStyle = color.style;
-                }
-
-                ctx.fillRect(width_bias + j * tile_size, height_bias + i * tile_size, tile_size, tile_size);
+                this.update_cell(i, j);
             }
         }
     }

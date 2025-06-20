@@ -110,7 +110,6 @@ let entropyDisplay = undefined;
 let entropyProgress = undefined;
 
 function updateView() {
-    wave.render();
     let entropy = wave.total_entropy();
     entropyDisplay.textContent = `Entropy: ${entropy.toFixed(2)} / ${wave.initial_entropy.toFixed(2)} bits`;
     entropyProgress.value = 1 - (entropy / wave.initial_entropy);
@@ -173,6 +172,10 @@ function endGame() {
     stopButton.disabled = true;
 }
 
+function calculateDelay(sliderValue) {
+    return Math.round(1000 * Math.exp(-sliderValue / 130));
+}
+
 document.addEventListener("DOMContentLoaded", init);
 function init() {
     numRowsInput = document.getElementById("num-rows");
@@ -182,7 +185,8 @@ function init() {
     stepButton = document.getElementById("step-button");
     stopButton = document.getElementById("stop-button");
     speedSlider = document.getElementById("speed-slider");
-    speedSlider.value = interval; // Default speed
+    speedSlider.value = 500; // Default speed
+    interval = calculateDelay(500); // Initialize interval with calculated delay
     entropyDisplay = document.getElementById("entropy-display");
     entropyProgress = document.getElementById("entropy-progress");
 
@@ -190,9 +194,10 @@ function init() {
         if(playing) return;
 
         if(!started) {
-            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
+            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles5, canvas, palette);
             wave.clear();
             started = true;
+            wave.render();
             updateView();
         }
 
@@ -220,7 +225,7 @@ function init() {
     });
 
     speedSlider.addEventListener("input", (e) => {
-        interval = parseInt(e.target.value);
+        interval = calculateDelay(parseInt(e.target.value));
         if (playing) {
             clearInterval(playing);
             playing = setInterval(render, interval);

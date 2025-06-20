@@ -1,7 +1,7 @@
 "use strict";
 
 import { Grid, Tileset } from "./tiles.js";
-import { male_print_wave_multi } from "./debug.js";
+import { male_print_tileset, male_print_wave_multi } from "./debug.js";
 import { Color, WaveCanvas } from "./color.js";
 
 //TESTING
@@ -28,12 +28,9 @@ const CROSSOVER = [
     [0,0,0,0,0],
     [1,1,1,1,1],
     [1,1,0,1,1],
-    [1,1,0,1,1],
-    [0,1,0,1,0],
-    [1,1,0,1,1],
-    [1,1,0,1,1]
 ]
-const grid3 = new Grid(9, 5, (i, j) => CROSSOVER[i][j]);
+
+const grid3 = new Grid(5, 5, (i, j) => CROSSOVER[i][j]);
 const tiles3 = new Tileset(grid3, 3, 3, true, true);
 
 const KNOT = [
@@ -75,6 +72,25 @@ const palette = [
     new Color(255, 192, 203), // pink
 ]
 
+const CROSSOVER2 = [
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,0,1,0,1,1],
+    [0,0,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,0,0,0,0],
+    [0,1,0,1,1,1,1,1,1,1,1,1],
+    [0,1,0,0,0,0,0,0,0,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0]
+];
+
+const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
+const tiles6 = new Tileset(grid6, 5, 5, true, true);
+male_print_tileset(tiles6);
+
 const canvas = document.getElementById("wave-canvas");
 
 let started = false;
@@ -109,7 +125,7 @@ function init() {
         if(playing) return;
 
         if(!started) {
-            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles2, canvas, palette);
+            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
             wave.clear();
             started = true;
             updateView();

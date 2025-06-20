@@ -35,8 +35,7 @@ export function male_print_wave_multi(wave) {
     }
 }
 
-
-function male_print_tileset(tileset) {
+export function male_print_tileset(tileset) {
     const tiles = tileset.tiles;
     console.log("BORDERS", tileset.border);
     for (let i = 0; i < tiles.length; i++) {

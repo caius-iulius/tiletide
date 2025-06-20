@@ -6,7 +6,10 @@ import { Grid, DIRECTIONS } from "./tiles.js";
 export class Wave extends Grid {
     constructor(rows, cols, tileset) {
         super(tileset.wrap_rows ? rows : rows + 1, tileset.wrap_cols ? cols : cols + 1, (i, j) => {
-            if (i === rows || j === cols) return [null];
+            if (i === rows || j === cols) return {
+                possibilities: [null],
+                entropy: 0
+            };
 
             const arr = [];
             for (let i = 0; i < tileset.size; i++) {

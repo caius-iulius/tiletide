@@ -2,6 +2,7 @@
 
 import { Queue } from "./queue.js";
 import { Grid, DIRECTIONS } from "./tiles.js";
+import { Color } from "./color.js";
 
 export class Wave extends Grid {
     constructor(rows, cols, tileset) {
@@ -155,5 +156,55 @@ export class Wave extends Grid {
         }
 
         return entropy;
+    }
+}
+
+export class WaveCanvas extends Wave {
+    static CONTRADICTION_COLOR = new Color(255, 0, 255);
+
+    constructor(rows, cols, tileset, canvas, palette) {
+        super(rows, cols, tileset);
+        this.palette = palette;
+        this.canvas = canvas;
+    }
+
+    clear() {
+        const ctx = this.canvas.getContext("2d");
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    render() {
+        const ctx = this.canvas.getContext("2d");
+        const rows = this.tileset.wrap_rows ? this.rows : this.rows - 1;
+        const cols = this.tileset.wrap_cols ? this.cols : this.cols - 1;
+
+        const tile_size = Math.min(
+            this.canvas.width / cols,
+            this.canvas.height / rows
+        );
+
+        const width_bias = (this.canvas.width - tile_size * cols) / 2;
+        const height_bias = (this.canvas.height - tile_size * rows) / 2;
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const tile = this.grid[i][j].possibilities;
+
+                if (tile.length === 0) {
+                    ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
+                } else {
+                    const wc = tile.map((t) => {
+                        return [this.tileset.get_weight(t), this.palette[this.tileset.tiles[t].center]];
+                    });
+
+                    const color = Color.weighed_sum(wc);
+
+                    ctx.fillStyle = color.style;
+                }
+
+                ctx.fillRect(width_bias + j * tile_size, height_bias + i * tile_size, tile_size, tile_size);
+            }
+        }
     }
 }

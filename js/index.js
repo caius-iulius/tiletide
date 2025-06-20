@@ -2,7 +2,8 @@
 
 import { Grid, Tileset } from "./tiles.js";
 import { male_print_tileset, male_print_wave_multi } from "./debug.js";
-import { Color, WaveCanvas } from "./color.js";
+import { Color } from "./color.js";
+import { WaveCanvas } from "./wave.js";
 
 //TESTING
 const CONCENTRIC = function(n, i, j) {
@@ -108,61 +109,6 @@ let numColsInput = undefined;
 let entropyDisplay = undefined;
 let entropyProgress = undefined;
 
-document.addEventListener("DOMContentLoaded", init);
-function init() {
-    numRowsInput = document.getElementById("num-rows");
-    numColsInput = document.getElementById("num-cols");
-    playButton = document.getElementById("play-button");
-    pauseButton = document.getElementById("pause-button");
-    stepButton = document.getElementById("step-button");
-    stopButton = document.getElementById("stop-button");
-    speedSlider = document.getElementById("speed-slider");
-    speedSlider.value = interval; // Default speed
-    entropyDisplay = document.getElementById("entropy-display");
-    entropyProgress = document.getElementById("entropy-progress");
-
-    playButton.addEventListener("click", () => {
-        if(playing) return;
-
-        if(!started) {
-            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
-            wave.clear();
-            started = true;
-            updateView();
-        }
-
-        playGame();
-    });
-
-    pauseButton.addEventListener("click", () => {
-        if (!playing) return;
-
-        pauseGame();
-    });
-
-    stepButton.addEventListener("click", () => {
-        if (playing || !started) return;
-
-        if(!render_step()) {
-            endGame();
-        }
-    });
-
-    stopButton.addEventListener("click", () => {
-        if (!started) return;
-
-        endGame();
-    });
-
-    speedSlider.addEventListener("input", (e) => {
-        interval = parseInt(e.target.value);
-        if (playing) {
-            clearInterval(playing);
-            playing = setInterval(render, interval);
-        }
-    });
-}
-
 function updateView() {
     wave.render();
     let entropy = wave.total_entropy();
@@ -225,4 +171,59 @@ function endGame() {
     numColsInput.disabled = false;
     stepButton.disabled = true;
     stopButton.disabled = true;
+}
+
+document.addEventListener("DOMContentLoaded", init);
+function init() {
+    numRowsInput = document.getElementById("num-rows");
+    numColsInput = document.getElementById("num-cols");
+    playButton = document.getElementById("play-button");
+    pauseButton = document.getElementById("pause-button");
+    stepButton = document.getElementById("step-button");
+    stopButton = document.getElementById("stop-button");
+    speedSlider = document.getElementById("speed-slider");
+    speedSlider.value = interval; // Default speed
+    entropyDisplay = document.getElementById("entropy-display");
+    entropyProgress = document.getElementById("entropy-progress");
+
+    playButton.addEventListener("click", () => {
+        if(playing) return;
+
+        if(!started) {
+            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
+            wave.clear();
+            started = true;
+            updateView();
+        }
+
+        playGame();
+    });
+
+    pauseButton.addEventListener("click", () => {
+        if (!playing) return;
+
+        pauseGame();
+    });
+
+    stepButton.addEventListener("click", () => {
+        if (playing || !started) return;
+
+        if(!render_step()) {
+            endGame();
+        }
+    });
+
+    stopButton.addEventListener("click", () => {
+        if (!started) return;
+
+        endGame();
+    });
+
+    speedSlider.addEventListener("input", (e) => {
+        interval = parseInt(e.target.value);
+        if (playing) {
+            clearInterval(playing);
+            playing = setInterval(render, interval);
+        }
+    });
 }

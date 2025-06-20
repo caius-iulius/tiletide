@@ -64,10 +64,7 @@ class Tile extends Grid {
 
         this.weight = 1;
         this.compatible = [[], [], [], []];
-    }
-
-    get center() {
-        return this.grid[Math.floor(this.rows / 2)][Math.floor(this.cols / 2)];
+        this.center = this.grid[Math.floor(rows / 2)][Math.floor(cols / 2)];
     }
 }
 

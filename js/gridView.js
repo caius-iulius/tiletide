@@ -23,14 +23,28 @@ export class GridView {
             this.colorGrid
         );
 
-        canvas.addEventListener("click", (e) => {
-            console.log(
-                `Canvas clicked at (${e.clientX}, ${e.clientY}) (${e.offsetX}, ${e.offsetY}) is hidden: ${this.hidden}`
-            );
+        canvas.addEventListener('mousedown', (e) => {
+            if(this.hidden) return;
 
-            if (this.hidden) return;
+            this.dragging = true;
             this.gridCanvas.handleClickEvent(e);
         });
+        canvas.addEventListener('mousemove', (e) => {
+            if(this.hidden) return;
+            if (!this.dragging) return;
+
+            this.gridCanvas.handleClickEvent(e);
+        });
+        canvas.addEventListener('mouseup', () => {
+            if (this.hidden) return;
+
+            this.dragging = false;
+        });
+        canvas.addEventListener("mouseleave", () => {
+            if (this.hidden) return;
+
+            this.dragging = false;
+        })
 
         this.gridNumRowsInput.addEventListener("change", () => { this.resizeEvent() });
         this.gridNumColsInput.addEventListener("change", () => { this.resizeEvent() });

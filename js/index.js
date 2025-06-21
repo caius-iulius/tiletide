@@ -3,6 +3,7 @@
 import { Grid, Tileset } from "./tiles.js";
 import { male_print_tileset, male_print_wave_multi } from "./debug.js";
 import { Color } from "./color.js";
+import { ColorGrid } from "./colorGrid.js";
 import { WaveCanvas } from "./wave.js";
 
 //TESTING
@@ -71,6 +72,12 @@ const palette = [
     new Color(128, 0, 128), // purple
     new Color(0, 255, 255), // cyan
     new Color(255, 192, 203), // pink
+    new Color(128, 128, 128), // gray
+    new Color(0, 128, 0), // dark green
+    new Color(0, 0, 128), // dark blue
+    new Color(128, 0, 0), // dark red
+    new Color(255, 105, 180), // hot pink
+    new Color(255, 215, 0) // gold
 ]
 
 const CROSSOVER2 = [
@@ -108,6 +115,7 @@ let numRowsInput = undefined;
 let numColsInput = undefined;
 let entropyDisplay = undefined;
 let entropyProgress = undefined;
+let colorGrid = undefined;
 
 function updateView() {
     let entropy = wave.total_entropy();
@@ -173,7 +181,7 @@ function endGame() {
 }
 
 function calculateDelay(sliderValue) {
-    return Math.round(1000 * Math.exp(-sliderValue / 130));
+    return Math.round(1000 * Math.exp(-sliderValue / 200));
 }
 
 document.addEventListener("DOMContentLoaded", init);
@@ -189,12 +197,14 @@ function init() {
     interval = calculateDelay(500); // Initialize interval with calculated delay
     entropyDisplay = document.getElementById("entropy-display");
     entropyProgress = document.getElementById("entropy-progress");
+    colorGrid = new ColorGrid("color-grid", palette);
+    colorGrid.hide();
 
     playButton.addEventListener("click", () => {
         if(playing) return;
 
         if(!started) {
-            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles5, canvas, palette);
+            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
             wave.clear();
             started = true;
             wave.render();

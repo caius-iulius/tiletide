@@ -1,6 +1,6 @@
 export class ColorGrid {
-    constructor(gridId, colors) {
-        this.gridElement = document.getElementById(gridId);
+    constructor(gridElement, colors) {
+        this.gridElement = gridElement;
         this.colors = colors;
         this.size = colors.length;
         this.selectedColor = null;
@@ -27,13 +27,5 @@ export class ColorGrid {
 
         this.selectedColor = index;
         this.cells[index].classList.add('color-selected');
-    }
-
-    hide() {
-        this.gridElement.style.display = 'none';
-    }
-
-    show() {
-        this.gridElement.style.display = 'grid';
     }
 }

@@ -1,18 +1,20 @@
 "use strict";
 
 import { Grid, Tileset } from "./tiles.js";
-import { male_print_tileset, male_print_wave_multi } from "./debug.js";
 import { Color } from "./color.js";
 import { ColorGrid } from "./colorGrid.js";
-import { WaveCanvas } from "./wave.js";
+import { GridCanvas } from "./gridCanvas.js";
+import { WaveView } from "./waveView.js";
+import { GridView } from "./gridView.js";
+import { Save } from "./save.js";
 
 //TESTING
 const CONCENTRIC = function(n, i, j) {
     return (i == 0 || i == n - 1 || j == 0 || j == n - 1) ? 0 : 1;
 }
 
-const grid = new Grid(6, 6, (i, j) => CONCENTRIC(6,i,j));
-const tiles = new Tileset(grid, 3, 3, true, true);
+const grid1 = new Grid(6, 6, (i, j) => CONCENTRIC(6,i,j));
+const tiles1 = new Tileset(grid1, 3, 3, true, true);
 
 const ARR = [
     [0,0,0,0],
@@ -62,23 +64,27 @@ const grid5 = new Grid(9, 9, (i, j) => CURVES[i][j]);
 const tiles5 = new Tileset(grid5, 3, 3, true, true);
 
 const palette = [
-    new Color(0, 0, 0), // black
-    new Color(255, 255, 255), // white
-    new Color(255, 0, 0), // red
-    new Color(0, 255, 0), // green
-    new Color(0, 0, 255), // blue
-    new Color(255, 255, 0), // yellow
-    new Color(255, 165, 0), // orange
-    new Color(128, 0, 128), // purple
-    new Color(0, 255, 255), // cyan
-    new Color(255, 192, 203), // pink
-    new Color(128, 128, 128), // gray
-    new Color(0, 128, 0), // dark green
-    new Color(0, 0, 128), // dark blue
-    new Color(128, 0, 0), // dark red
-    new Color(255, 105, 180), // hot pink
-    new Color(255, 215, 0) // gold
+    new Color(0, 0, 0),         // Nero
+    new Color(47, 50, 67),      // Grigio scuro
+    new Color(123, 145, 153),   // Grigio bluastro
+    new Color(195, 221, 218),   // Azzurro chiaro
+
+    new Color(255, 255, 255),   // Bianco
+    new Color(232, 24, 78),     // Fucsia intenso
+    new Color(248, 156, 181),   // Rosa
+    new Color(153, 51, 0),      // Marrone
+
+    new Color(255, 153, 51),    // Arancione
+    new Color(243, 210, 0),     // Giallo
+    new Color(223, 255, 153),   // Verde chiaro
+    new Color(0, 204, 0),       // Verde
+
+    new Color(102, 255, 204),   // Turchese
+    new Color(102, 153, 255),   // Azzurro
+    new Color(76, 0, 255),      // Blu
+    new Color(204, 0, 255),     // Viola
 ]
+
 
 const CROSSOVER2 = [
     [0,1,0,0,0,0,0,0,1,0,0,0],
@@ -97,148 +103,60 @@ const CROSSOVER2 = [
 
 const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
 const tiles6 = new Tileset(grid6, 5, 5, true, true);
-male_print_tileset(tiles6);
 
-const canvas = document.getElementById("wave-canvas");
-
-let started = false;
-let playing = null;
-let wave = undefined; //new WaveCanvas(50, 50, tiles2, canvas, palette);
-let interval = 0;
-
-let playButton = undefined;
-let pauseButton = undefined;
-let stepButton = undefined;
-let stopButton = undefined;
-let speedSlider = undefined;
-let numRowsInput = undefined;
-let numColsInput = undefined;
-let entropyDisplay = undefined;
-let entropyProgress = undefined;
-let colorGrid = undefined;
-
-function updateView() {
-    let entropy = wave.total_entropy();
-    entropyDisplay.textContent = `Entropy: ${entropy.toFixed(2)} / ${wave.initial_entropy.toFixed(2)} bits`;
-    entropyProgress.value = 1 - (entropy / wave.initial_entropy);
-}
-
-function render_step() {
-    let choice = wave.choose();
-    if (!choice) return false;
-
-    wave.observe(...choice);
-
-    const success = wave.propagate([choice]);
-
-    updateView();
-
-    if (!success) {
-        male_print_wave_multi(wave);
-        console.log();
-
-        return false;
-    }
-
-    return true;
-}
-
-function render() {
-    if(!render_step()) {
-        endGame();
-    }
-}
-
-function playGame() {
-    console.log("Starting game with interval:", interval);
-    playing = setInterval(render, interval);
-
-    numRowsInput.disabled = true;
-    numColsInput.disabled = true;
-    playButton.disabled = true;
-    pauseButton.disabled = false;
-    stepButton.disabled = true;
-    stopButton.disabled = false;
-}
-
-function pauseGame() {
-    clearInterval(playing);
-    playing = null;
-
-    playButton.disabled = false;
-    pauseButton.disabled = true;
-    stepButton.disabled = false;
-}
-
-function endGame() {
-    pauseGame();
-    started = false;
-
-    numRowsInput.disabled = false;
-    numColsInput.disabled = false;
-    stepButton.disabled = true;
-    stopButton.disabled = true;
-}
-
-function calculateDelay(sliderValue) {
-    return Math.round(1000 * Math.exp(-sliderValue / 200));
-}
+let save = new Save(grid6, 5, true, true, palette);
 
 document.addEventListener("DOMContentLoaded", init);
 function init() {
-    numRowsInput = document.getElementById("num-rows");
-    numColsInput = document.getElementById("num-cols");
-    playButton = document.getElementById("play-button");
-    pauseButton = document.getElementById("pause-button");
-    stepButton = document.getElementById("step-button");
-    stopButton = document.getElementById("stop-button");
-    speedSlider = document.getElementById("speed-slider");
-    speedSlider.value = 500; // Default speed
-    interval = calculateDelay(500); // Initialize interval with calculated delay
-    entropyDisplay = document.getElementById("entropy-display");
-    entropyProgress = document.getElementById("entropy-progress");
-    colorGrid = new ColorGrid("color-grid", palette);
-    colorGrid.hide();
+    const canvas = document.getElementById("wave-canvas");
+    const colorGrid = new ColorGrid(document.getElementById("color-grid"), palette);
+    const toWaveButton = document.getElementById("to-wave-button");
+    const gridCanvas = document.getElementById("grid-canvas");
 
-    playButton.addEventListener("click", () => {
-        if(playing) return;
+    // Initialize WaveView
+    const waveView = new WaveView(
+        save,
+        canvas,
+        document.getElementById("wave-controls"),
+        gridCanvas,
+        document.getElementById("play-button"),
+        document.getElementById("pause-button"),
+        document.getElementById("step-button"),
+        document.getElementById("stop-button"),
+        document.getElementById("speed-slider"),
+        document.getElementById("num-cols"),
+        document.getElementById("num-rows"),
+        document.getElementById("entropy-display"),
+        document.getElementById("entropy-progress")
+    );
 
-        if(!started) {
-            wave = new WaveCanvas(parseInt(numRowsInput.value), parseInt(numColsInput.value), tiles6, canvas, palette);
-            wave.clear();
-            started = true;
-            wave.render();
-            updateView();
-        }
+    // Initialize GridView
+    const gridView = new GridView(
+        save,
+        canvas,
+        document.getElementById("grid-controls"),
+        colorGrid,
+        document.getElementById("grid-num-rows"),
+        document.getElementById("grid-num-cols"),
+        document.getElementById("tile-length"),
+        document.getElementById("wrap-rows"),
+        document.getElementById("wrap-cols")
+    );
 
-        playGame();
+    gridCanvas.addEventListener("click", (_e) => {
+        if (waveView.started) return;
+
+        waveView.hide();
+        gridView.show();
     });
 
-    pauseButton.addEventListener("click", () => {
-        if (!playing) return;
+    toWaveButton.addEventListener("click", () => {
+        save = gridView.getSave();
+        waveView.loadSave(save);
 
-        pauseGame();
+        gridView.hide();
+        waveView.show();
     });
 
-    stepButton.addEventListener("click", () => {
-        if (playing || !started) return;
-
-        if(!render_step()) {
-            endGame();
-        }
-    });
-
-    stopButton.addEventListener("click", () => {
-        if (!started) return;
-
-        endGame();
-    });
-
-    speedSlider.addEventListener("input", (e) => {
-        interval = calculateDelay(parseInt(e.target.value));
-        if (playing) {
-            clearInterval(playing);
-            playing = setInterval(render, interval);
-        }
-    });
+    waveView.show();
 }

@@ -9,32 +9,49 @@
 </head>
 <body class="column">
     <div id="controls">
-        <div id="color-grid">
+        <div id="wave-controls" hidden>
+            <canvas id="grid-canvas" width="200" height="200"></canvas>
+
+            <p>
+            CONTROLLI
+            </p>
+
+            <div>
+                <label for="num-rows">Righe:</label>
+                <input type="number" id="num-rows" min="1" max="300" value="10">
+                <label for="num-cols">Colonne:</label>
+                <input type="number" id="num-cols" min="1" max="300" value="10">
+            </div>
+
+            <div>
+                <button id="play-button">PLAY</button>
+                <button id="pause-button" disabled>PAUSE</button>
+                <button id="step-button" disabled>STEP</button>
+                <button id="stop-button" disabled>STOP</button>
+            </div>
+
+            <label for="speed-slider">Velocità:</label>
+            <input type="range" id="speed-slider" min="0" max="1000" value="500">
+
+            <div id="entropy-display"></div>
+            <progress id="entropy-progress" value="0" max="1"></progress>
         </div>
 
-        <p>
-        CONTROLLI
-        </p>
-
-        <div>
-            <label for="num-rows">Righe:</label>
-            <input type="number" id="num-rows" min="1" max="300" value="10">
-            <label for="num-cols">Colonne:</label>
-            <input type="number" id="num-cols" min="1" max="300" value="10">
+        <div id="grid-controls" hidden>
+            <p>IMPOSTAZIONI TILE</p>
+            <div id="color-grid"></div>
+            <label for="grid-num-rows">Righe:</label>
+            <input type="number" id="grid-num-rows" min="1" max="300" value="10">
+            <label for="grid-num-cols">Colonne:</label>
+            <input type="number" id="grid-num-cols" min="1" max="300" value="10">
+            <label for="tile-length">DImensione Tile:</label>
+            <input type="number" id="tile-length" min="1" max="10" value="3">
+            <label for="wrap-rows">Wrap Rows:</label>
+            <input type="checkbox" id="wrap-rows">
+            <label for="wrap-cols">Wrap Cols:</label>
+            <input type="checkbox" id="wrap-cols">
+            <button id="to-wave-button">TRY</button>
         </div>
-
-        <div>
-            <button id="play-button">PLAY</button>
-            <button id="pause-button" disabled>PAUSE</button>
-            <button id="step-button" disabled>STEP</button>
-            <button id="stop-button" disabled>STOP</button>
-        </div>
-
-        <label for="speed-slider">Velocità:</label>
-        <input type="range" id="speed-slider" min="0" max="1000" value="500">
-
-        <div id="entropy-display"></div>
-        <progress id="entropy-progress" value="0" max="1"></progress>
     </div>
     <div id="slate">
         <canvas id="wave-canvas" width="600" height="600"></canvas>

@@ -176,11 +176,12 @@ export class WaveCanvas extends Wave {
 
     clear() {
         const ctx = this.canvas.getContext("2d");
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     update_cell(row, col) {
+        if (!this.canvas) return;
+
         const ctx = this.canvas.getContext("2d");
         const tile = this.grid[row][col].possibilities;
 
@@ -207,6 +208,8 @@ export class WaveCanvas extends Wave {
     }
 
     render() {
+        this.clear();
+
         const rows = this.tileset.wrap_rows ? this.rows : this.rows - 1;
         const cols = this.tileset.wrap_cols ? this.cols : this.cols - 1;
 

@@ -27,7 +27,7 @@ body {
     box-sizing: border-box;
 }
 
-#slate canvas {
+canvas {
     display: block;
     margin: 0 auto;
     background-color: #ffffff;
@@ -44,10 +44,9 @@ body {
     width: 50px;
     height: 50px;
     cursor: pointer;
-    border: 2px solid white;
-    border-radius: 4px;
+    border: 1px solid white;
 }
 
 .color-selected {
-    border: 2px solid black;
+    border: 1px solid black;
 }

@@ -3,6 +3,7 @@ export class GridCanvas {
         this.grid = undefined;
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
         this.palette = palette;
 
         this.setGrid(grid);
@@ -10,12 +11,12 @@ export class GridCanvas {
 
     setGrid(grid) {
         this.grid = grid;
-        this.tile_size = Math.min(
+        this.tile_size = Math.floor(Math.min(
             this.canvas.width / this.grid.cols,
             this.canvas.height / this.grid.rows
-        );
-        this.width_bias = (this.canvas.width - this.tile_size * this.grid.cols) / 2;
-        this.height_bias = (this.canvas.height - this.tile_size * this.grid.rows) / 2;
+        ));
+        this.width_bias = Math.floor((this.canvas.width - this.tile_size * this.grid.cols) / 2);
+        this.height_bias = Math.floor((this.canvas.height - this.tile_size * this.grid.rows) / 2);
     }
 
     drawGrid() {

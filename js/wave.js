@@ -172,39 +172,39 @@ export class WaveCanvas extends Wave {
         super(rows, cols, tileset);
         this.palette = palette;
         this.canvas = canvas;
+        this.ctx = canvas.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
     }
 
     clear() {
-        const ctx = this.canvas.getContext("2d");
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     update_cell(row, col) {
         if (!this.canvas) return;
 
-        const ctx = this.canvas.getContext("2d");
         const tile = this.grid[row][col].possibilities;
 
         if (tile.length === 0) {
-            ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
+            this.ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
         } else {
             const wc = tile.map((t) => {
                 return [this.tileset.get_weight(t), this.palette[this.tileset.tiles[t].center]];
             });
 
             const color = Color.weighed_sum(wc);
-            ctx.fillStyle = color.style;
+            this.ctx.fillStyle = color.style;
         }
 
-        const tile_size = Math.min(
+        const tile_size = Math.floor(Math.min(
             this.canvas.width / this.cols,
             this.canvas.height / this.rows
-        );
+        ));
 
-        const width_bias = (this.canvas.width - tile_size * this.cols) / 2;
-        const height_bias = (this.canvas.height - tile_size * this.rows) / 2;
+        const width_bias = Math.floor((this.canvas.width - tile_size * this.cols) / 2);
+        const height_bias = Math.floor((this.canvas.height - tile_size * this.rows) / 2);
 
-        ctx.fillRect(width_bias + col * tile_size, height_bias + row * tile_size, tile_size, tile_size);
+        this.ctx.fillRect(width_bias + col * tile_size, height_bias + row * tile_size, tile_size, tile_size);
     }
 
     render() {

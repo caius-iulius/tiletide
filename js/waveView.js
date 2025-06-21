@@ -76,7 +76,6 @@ export class WaveView {
     }
 
     initWave() {
-        console.log("initWave:", this.canvas);
         this.wave = new WaveCanvas(
             parseInt(this.numRowsInput.value),
             parseInt(this.numColsInput.value),

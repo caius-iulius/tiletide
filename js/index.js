@@ -94,6 +94,9 @@ function init() {
     const toWaveButton = document.getElementById("to-wave-button");
     const gridCanvas = document.getElementById("grid-canvas");
 
+    canvas.width = Math.floor(window.innerWidth * 0.47);
+    canvas.height = Math.floor(window.innerHeight * 0.96);
+
     // Initialize WaveView
     waveView = new WaveView(
         INITIAL_SAVE,

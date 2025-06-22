@@ -1,6 +1,6 @@
 "use strict";
 
-import { Grid, Tileset } from "./tiles.js";
+import { Grid } from "./tiles.js";
 import { createColor } from "./color.js";
 import { ColorGrid } from "./colorGrid.js";
 import { WaveView } from "./waveView.js";
@@ -9,57 +9,7 @@ import { UserView } from "./userView.js";
 import { Save } from "./save.js";
 import { ApiContext } from "./apiContext.js";
 
-//TESTING
-const CONCENTRIC = function(n, i, j) {
-    return (i == 0 || i == n - 1 || j == 0 || j == n - 1) ? 0 : 1;
-}
-
-const grid1 = new Grid(6, 6, (i, j) => CONCENTRIC(6,i,j));
-const tiles1 = new Tileset(grid1, 3, 3, true, true);
-
-const ARR = [
-    [0,0,0,0],
-    [0,1,1,1],
-    [0,1,2,1],
-    [0,1,1,1]
-];
-
-const grid2 = new Grid(4, 4, (i, j) => ARR[i][j]);
-const tiles2 = new Tileset(grid2, 2, 2, true, true);
-
-const CURVES = [
-    [5,5,5,5,5,5,5,5,5],
-    [5,6,6,6,6,6,6,6,5],
-    [5,6,6,5,5,5,6,6,5],
-    [5,6,5,5,5,5,5,6,5],
-    [5,6,5,5,5,5,5,6,5],
-    [5,6,5,5,5,5,5,6,5],
-    [5,6,6,5,5,5,6,6,5],
-    [5,6,6,6,6,6,6,6,5],
-    [5,5,5,5,5,5,5,5,5]
-]
-const grid5 = new Grid(9, 9, (i, j) => CURVES[i][j]);
-const tiles5 = new Tileset(grid5, 3, 3, true, true);
-
-const CROSSOVER2 = [
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,0,0,0,0,0,0,0,1,0,0,0],
-    [1,1,1,1,1,1,1,0,1,0,1,1],
-    [0,0,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,0,0,0,0],
-    [0,1,0,1,1,1,1,1,1,1,1,1],
-    [0,1,0,0,0,0,0,0,0,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0]
-];
-
-const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
-const tiles6 = new Tileset(grid6, 5, 5, true, true);
-
-const palette = [
+const PALETTE = [
     createColor(0, 0, 0),         // Nero
     createColor(47, 50, 67),      // Grigio scuro
     createColor(123, 145, 153),   // Grigio bluastro
@@ -81,7 +31,15 @@ const palette = [
     createColor(204, 0, 255),     // Viola
 ]
 
-let INITIAL_SAVE = new Save("Default Save", grid6, 5, true, true, palette);
+const ARR = [
+    [1,1,1,1],
+    [1,0,0,0],
+    [1,0,5,0],
+    [1,0,0,0]
+];
+const GRID = new Grid(4, 4, (i, j) => ARR[i][j]);
+let INITIAL_SAVE = new Save("Untitled", GRID, 2, true, true, PALETTE);
+
 export let waveView = undefined;
 export let gridView = undefined;
 export let userView = undefined;
@@ -90,7 +48,7 @@ export let apiContext = undefined;
 document.addEventListener("DOMContentLoaded", init);
 function init() {
     const canvas = document.getElementById("wave-canvas");
-    const colorGrid = new ColorGrid(document.getElementById("color-grid"), palette);
+    const colorGrid = new ColorGrid(document.getElementById("color-grid"), PALETTE);
     const toWaveButton = document.getElementById("to-wave-button");
     const gridCanvas = document.getElementById("grid-canvas");
 

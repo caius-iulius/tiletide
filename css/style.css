@@ -1,3 +1,28 @@
+:root {
+    /* Base colors */
+    --bg-primary: #11111b;
+    --bg-secondary: #181825;
+    --bg-tertiary: #313244;
+    --text-primary: #cdd6f4;
+    --text-secondary: #585b70;
+    --border-primary: #585b70;
+    --border-secondary: #6c7086;
+    
+    /* Accent colors */
+    --accent-blue: #89b4fa;
+    --accent-green: #a6e3a1;
+    --accent-yellow: #f9e2af;
+    
+    /* Interactive states */
+    --hover-bg: var(--accent-blue);
+    --hover-text: var(--bg-primary);
+    --active-bg: var(--accent-green);
+    --active-text: var(--bg-primary);
+    --focus-color: var(--accent-blue);
+    --focus-shadow: rgba(137, 180, 250, 0.15);
+    --selected-border: var(--accent-yellow);
+}
+
 body {
     display: flex;
     flex-direction: row;
@@ -5,27 +30,27 @@ body {
     padding: 0;
     height: 100vh;
     font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    background-color: #11111b;
-    color: #cdd6f4;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 #controls {
     width: 25%;
-    background-color: #181825;
+    background-color: var(--bg-secondary);
     padding: 10px;
     box-sizing: border-box;
 }
 
 #slate {
     width: 50%;
-    background-color: #11111b;
+    background-color: var(--bg-primary);
     padding: 10px;
     box-sizing: border-box;
 }
 
 #user-panel {
     width: 25%;
-    background-color: #181825;
+    background-color: var(--bg-secondary);
     padding: 10px;
     box-sizing: border-box;
     height: 100vh;
@@ -49,11 +74,11 @@ progress {
 canvas {
     display: block;
     margin: 0 auto;
-    background-color: #181825;
+    background-color: var(--bg-secondary);
 }
 
 #wave-canvas{
-    background-color: #11111b;
+    background-color: var(--bg-primary);
 }
 
 #color-grid {
@@ -67,11 +92,11 @@ canvas {
     width: 50px;
     height: 50px;
     cursor: pointer;
-    border: 1px solid #6c7086;
+    border: 1px solid var(--border-secondary);
 }
 
 .color-selected {
-    border: 1px solid #f9e2af;
+    border: 1px solid var(--selected-border);
 }
 
 .saves-container {
@@ -88,9 +113,9 @@ canvas {
 
 /* Button styles */
 button {
-    background-color: #313244;
-    color: #cdd6f4;
-    border: 1px solid #585b70;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -100,25 +125,25 @@ button {
 }
 
 button:hover {
-    background-color: #89b4fa;
-    color: #11111b;
-    border-color: #89b4fa;
+    background-color: var(--hover-bg);
+    color: var(--hover-text);
+    border-color: var(--hover-bg);
 }
 
 button:active {
-    background-color: #a6e3a1;
-    color: #11111b;
+    background-color: var(--active-bg);
+    color: var(--active-text);
 }
 
 button:disabled {
-    background-color: #181825;
-    color: #585b70;
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
     cursor: not-allowed;
 }
 
 /* Link styles */
 a {
-    color: #89b4fa;
+    color: var(--accent-blue);
     text-decoration: none;
 }
 
@@ -130,9 +155,9 @@ a:hover {
 input[type="text"],
 input[type="number"],
 input[type="password"] {
-    background-color: #313244;
-    color: #cdd6f4;
-    border: 1px solid #585b70;
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
     padding: 8px 12px;
     border-radius: 4px;
     font-size: 14px;
@@ -147,13 +172,13 @@ input[type="password"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #89b4fa;
-    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.15);
+    border-color: var(--focus-color);
+    box-shadow: 0 0 0 2px var(--focus-shadow);
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: #585b70;
+    color: var(--text-secondary);
 }
 
 /* Remove spinner arrows from number inputs */

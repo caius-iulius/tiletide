@@ -2,7 +2,7 @@
 
 import { Queue } from "./queue.js";
 import { Grid, DIRECTIONS } from "./tiles.js";
-import { Color } from "./color.js";
+import { createColor, getColorStyle, weighedColorSum } from "./color.js";
 
 export class Wave extends Grid {
     constructor(rows, cols, tileset) {
@@ -166,7 +166,7 @@ export class Wave extends Grid {
 }
 
 export class WaveCanvas extends Wave {
-    static CONTRADICTION_COLOR = new Color(255, 0, 255);
+    static CONTRADICTION_COLOR = createColor(255, 0, 255);
 
     constructor(rows, cols, tileset, canvas, palette) {
         super(rows, cols, tileset);
@@ -186,14 +186,14 @@ export class WaveCanvas extends Wave {
         const tile = this.grid[row][col].possibilities;
 
         if (tile.length === 0) {
-            this.ctx.fillStyle = WaveCanvas.CONTRADICTION_COLOR.style;
+            this.ctx.fillStyle = getColorStyle(WaveCanvas.CONTRADICTION_COLOR);
         } else {
             const wc = tile.map((t) => {
                 return [this.tileset.get_weight(t), this.palette[this.tileset.tiles[t].center]];
             });
 
-            const color = Color.weighed_sum(wc);
-            this.ctx.fillStyle = color.style;
+            const color = weighedColorSum(wc);
+            this.ctx.fillStyle = getColorStyle(color);
         }
 
         const tile_size = Math.floor(Math.min(

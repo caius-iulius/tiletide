@@ -1,3 +1,5 @@
+import { getColorStyle } from "./color.js";
+
 export class GridCanvas {
     constructor(grid, canvas, palette) {
         this.grid = undefined;
@@ -49,7 +51,7 @@ export class GridCanvas {
             for (let j = 0; j < this.grid.cols; j++) {
                 const color = this.palette[this.grid.grid[i][j]];
 
-                this.ctx.fillStyle = color.style;
+                this.ctx.fillStyle = getColorStyle(color);
                 this.ctx.fillRect(
                     this.width_bias + j * this.tile_size,
                     this.height_bias + i * this.tile_size,

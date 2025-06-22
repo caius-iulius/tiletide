@@ -1,3 +1,5 @@
+import { getColorStyle } from "./color.js";
+
 export class ColorGrid {
     constructor(gridElement, colors) {
         this.gridElement = gridElement;
@@ -10,7 +12,7 @@ export class ColorGrid {
         for (let i = 0; i < this.size; i++) {
             const cell = document.createElement('div');
             cell.className = 'color-cell';
-            cell.style.backgroundColor = this.colors[i].style;
+            cell.style.backgroundColor = getColorStyle(this.colors[i]);
             cell.addEventListener('click', () => this.selectColor(i));
 
             this.gridElement.appendChild(cell);

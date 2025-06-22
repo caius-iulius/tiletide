@@ -1,7 +1,7 @@
 "use strict";
 
 import { Grid, Tileset } from "./tiles.js";
-import { Color } from "./color.js";
+import { createColor } from "./color.js";
 import { ColorGrid } from "./colorGrid.js";
 import { WaveView } from "./waveView.js";
 import { GridView } from "./gridView.js";
@@ -65,25 +65,25 @@ const grid5 = new Grid(9, 9, (i, j) => CURVES[i][j]);
 const tiles5 = new Tileset(grid5, 3, 3, true, true);
 
 const palette = [
-    new Color(0, 0, 0),         // Nero
-    new Color(47, 50, 67),      // Grigio scuro
-    new Color(123, 145, 153),   // Grigio bluastro
-    new Color(195, 221, 218),   // Azzurro chiaro
+    createColor(0, 0, 0),         // Nero
+    createColor(47, 50, 67),      // Grigio scuro
+    createColor(123, 145, 153),   // Grigio bluastro
+    createColor(195, 221, 218),   // Azzurro chiaro
 
-    new Color(255, 255, 255),   // Bianco
-    new Color(232, 24, 78),     // Fucsia intenso
-    new Color(248, 156, 181),   // Rosa
-    new Color(153, 51, 0),      // Marrone
+    createColor(255, 255, 255),   // Bianco
+    createColor(232, 24, 78),     // Fucsia intenso
+    createColor(248, 156, 181),   // Rosa
+    createColor(153, 51, 0),      // Marrone
 
-    new Color(255, 153, 51),    // Arancione
-    new Color(243, 210, 0),     // Giallo
-    new Color(223, 255, 153),   // Verde chiaro
-    new Color(0, 204, 0),       // Verde
+    createColor(255, 153, 51),    // Arancione
+    createColor(243, 210, 0),     // Giallo
+    createColor(223, 255, 153),   // Verde chiaro
+    createColor(0, 204, 0),       // Verde
 
-    new Color(102, 255, 204),   // Turchese
-    new Color(102, 153, 255),   // Azzurro
-    new Color(76, 0, 255),      // Blu
-    new Color(204, 0, 255),     // Viola
+    createColor(102, 255, 204),   // Turchese
+    createColor(102, 153, 255),   // Azzurro
+    createColor(76, 0, 255),      // Blu
+    createColor(204, 0, 255),     // Viola
 ]
 
 

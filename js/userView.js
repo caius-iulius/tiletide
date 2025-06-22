@@ -53,7 +53,7 @@ export class UserView {
         });
 
         // Initialize view state
-        this.showProfile();
+        this.showLogin();
     }
 
     createCard(id, save) {
@@ -68,6 +68,7 @@ export class UserView {
         card.appendChild(canvas);
 
         const nameElement = document.createElement("div");
+        nameElement.className = "save-name";
         nameElement.textContent = save.name;
         card.appendChild(nameElement);
 

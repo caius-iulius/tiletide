@@ -32,10 +32,28 @@ body {
     overflow-y: auto;
 }
 
+.sidebar-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+progress {
+    width: 100%;
+}
+
 canvas {
     display: block;
     margin: 0 auto;
     background-color: #181825;
+}
+
+#wave-canvas{
+    background-color: #11111b;
 }
 
 #color-grid {
@@ -102,25 +120,16 @@ button:disabled {
 a {
     color: #89b4fa;
     text-decoration: none;
-    transition: color 0.2s ease;
 }
 
 a:hover {
-    color: #a6e3a1;
     text-decoration: underline;
-}
-
-a:visited {
-    color: #cba6f7;
 }
 
 /* Input styles */
 input[type="text"],
 input[type="number"],
-input[type="email"],
-input[type="password"],
-textarea,
-select {
+input[type="password"] {
     background-color: #313244;
     color: #cdd6f4;
     border: 1px solid #585b70;
@@ -129,7 +138,6 @@ select {
     font-size: 14px;
     font-family: inherit;
     transition: border-color 0.2s ease;
-    margin-bottom: 10px;
 }
 
 input[type="text"]:focus,

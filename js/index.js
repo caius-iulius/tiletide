@@ -3,10 +3,11 @@
 import { Grid, Tileset } from "./tiles.js";
 import { Color } from "./color.js";
 import { ColorGrid } from "./colorGrid.js";
-import { GridCanvas } from "./gridCanvas.js";
 import { WaveView } from "./waveView.js";
 import { GridView } from "./gridView.js";
+import { UserView } from "./userView.js";
 import { Save } from "./save.js";
+import { ApiContext } from "./apiContext.js";
 
 //TESTING
 const CONCENTRIC = function(n, i, j) {
@@ -105,6 +106,10 @@ const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
 const tiles6 = new Tileset(grid6, 5, 5, true, true);
 
 let save = new Save(grid6, 5, true, true, palette);
+export let waveView = undefined;
+export let gridView = undefined;
+export let userView = undefined;
+export let apiContext = undefined;
 
 document.addEventListener("DOMContentLoaded", init);
 function init() {
@@ -114,7 +119,7 @@ function init() {
     const gridCanvas = document.getElementById("grid-canvas");
 
     // Initialize WaveView
-    const waveView = new WaveView(
+    waveView = new WaveView(
         save,
         canvas,
         document.getElementById("wave-controls"),
@@ -131,7 +136,7 @@ function init() {
     );
 
     // Initialize GridView
-    const gridView = new GridView(
+    gridView = new GridView(
         save,
         canvas,
         document.getElementById("grid-controls"),
@@ -143,7 +148,20 @@ function init() {
         document.getElementById("wrap-cols")
     );
 
-    gridCanvas.addEventListener("click", (_e) => {
+    // Initialize API context
+    apiContext = new ApiContext();
+
+    // Initialize UserView
+    userView = new UserView(
+        apiContext,
+        document.getElementById("signup-form"),
+        document.getElementById("login-form"),
+        document.getElementById("user-profile"),
+        document.getElementById("show-login-button"),
+        document.getElementById("show-signup-button")
+    );
+
+    gridCanvas.addEventListener("click", () => {
         if (waveView.started) return;
 
         waveView.hide();

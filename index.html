@@ -57,7 +57,27 @@
         <canvas id="wave-canvas" width="600" height="600"></canvas>
     </div>
     <div id="user-panel">
-        UTENTE
+        <form id="signup-form">
+            <label for="new-username">Username:</label>
+            <input type="text" id="new-username" name="username" required pattern="^[A-Za-z0-9!#$%&*^_-~]{3,30}$">
+            <label for="new-password">Password:</label>
+            <input type="password" id="new-password" name="password" required pattern="^[A-Za-z0-9!#$%&*^_-~]{5,30}$">
+            <button type="submit">Sign Up</button>
+            <p>Already have an account? <a href="#" id="show-login-button">Login</a></p>
+        </form>
+
+        <form id="login-form" hidden>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required pattern="^[A-Za-z0-9!#$%&*^_-~]{3,30}$">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required pattern="^[A-Za-z0-9!#$%&*^_-~]{5,30}$">
+            <button type="submit">Login</button>
+            <p>Don't have an account? <a href="#" id="show-signup-button">Sign Up</a></p>
+        </form>
+
+        <div id="user-profile" hidden>
+            PROFILO
+        </div>
     </div>
 </body>
 </html>

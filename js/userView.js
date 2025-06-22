@@ -1,18 +1,5 @@
 import { GridCanvas } from "./gridCanvas.js";
 import { Save } from "./save.js";
-import { Grid } from "./tiles.js";
-
-const TESTSAVES = [
-    { id: 0, save: new Save("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 1, save: new Save("baaaaaaaaaaaa", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 2, save: new Save("c", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 3, save: new Save("a", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 4, save: new Save("b", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 5, save: new Save("c", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 6, save: new Save("a", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 7, save: new Save("b", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 8, save: new Save("c", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) },
-    { id: 9, save: new Save("d", new Grid(4, 4, (i, j) => (i + j) % 2), 4, true, true, [{r: 255, g: 255, b: 255}, {r: 0, g: 0, b: 0}]) }];
 
 export class UserView {
     constructor(apiContext, loadSaveCallback, signupForm, loginForm, userProfile, showLoginButton, showSignupButton) {
@@ -77,7 +64,7 @@ export class UserView {
         loadButton.addEventListener("click", (event) => {
             event.preventDefault();
             console.log(`Loading save: ${save.name}`);
-            this.loadSaveCallback(id, save);
+            this.loadSaveCallback(save);
         });
         card.appendChild(loadButton);
 
@@ -85,9 +72,15 @@ export class UserView {
         deleteButton.addEventListener("click", async (event) => {
             event.preventDefault();
             console.log(`Deleting save: ${save.name}`);
-            // Here you would typically call an API to delete the save
-            // For now, just log it
-            alert(`Delete functionality not implemented for ${save.name}`);
+
+            // Confirm deletion
+            if (confirm(`Are you sure you want to delete "${save.name}"? This action cannot be undone.`)) {
+                const success = await this.apiContext.delete(id);
+                if (success !== false) {
+                    // Refresh the profile view to show updated saves list
+                    this.renderProfile();
+                }
+            }
         });
         deleteButton.textContent = "Delete";
         card.appendChild(deleteButton);
@@ -109,8 +102,8 @@ export class UserView {
         const savesContainer = document.createElement("div");
         savesContainer.className = "saves-container";
 
-        TESTSAVES.forEach(({ id, save }) => {
-            const card = this.createCard(id, save);
+        this.apiContext.user.saves.forEach((save) => {
+            const card = this.createCard(save.save_id, Save.fromJSON(JSON.parse(save.data)));
             savesContainer.appendChild(card);
         });
 

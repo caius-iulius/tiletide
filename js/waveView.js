@@ -87,6 +87,7 @@ export class WaveView {
     }
 
     loadSave(save) {
+        this.endGame();
         this.tileset = save.getTileset();
         this.palette = save.palette;
         this.saveNameElement.textContent = save.name;

@@ -7,7 +7,7 @@ export class ApiContext {
 
     async signup(formData) {
         try {
-            const response = await fetch("/php/signup.php", {
+            const response = await fetch("./php/signup.php", {
                 method: "POST",
                 body: formData
             });
@@ -31,7 +31,7 @@ export class ApiContext {
 
     async login(formData) {
         try {
-            const response = await fetch("/php/login.php", {
+            const response = await fetch("./php/login.php", {
                 method: "POST",
                 body: formData
             });
@@ -41,6 +41,7 @@ export class ApiContext {
                 this.user = responseData.user;
                 this.token = responseData.token;
                 this.loggedIn = true;
+                console.log(this.user);
                 return true;
             } else {
                 alert(responseData.message);
@@ -53,7 +54,7 @@ export class ApiContext {
         }
     }
 
-    async save(saveName, saveJson) {
+    async save(saveName, saveData) {
         if (!this.loggedIn) {
             alert("You must be logged in to save.");
             return false;
@@ -61,13 +62,13 @@ export class ApiContext {
 
         const requestData = {
             save_name: saveName,
-            save_json: saveJson,
+            save_data: saveData,
             user_id: this.user.id,
             token: this.token
         };
 
         try {
-            const response = await fetch("/php/save.php", {
+            const response = await fetch("./php/save.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -75,6 +76,20 @@ export class ApiContext {
                 body: JSON.stringify(requestData)
             });
             const responseData = await response.json();
+            if (responseData.status !== "success") {
+                alert(responseData.message);
+                return responseData;
+            }
+
+            this.user.saves.push({
+                user_id: this.user.id,
+                save_id: responseData.save_id,
+                name: saveName,
+                data: saveData
+            })
+
+            console.log(this.user);
+
             alert("Save successful!");
             return responseData;
         } catch (error) {
@@ -91,22 +106,33 @@ export class ApiContext {
 
         const requestData = {
             save_id: saveId,
-            user_id: this.user.id,
             token: this.token
         };
 
         try {
-            await fetch("/php/delete.php", {
+            const response = await fetch("./php/delete.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(requestData)
             });
-            alert("Save deleted successfully!");
+
+            const result = await response.json();
+            
+            if (result.status === "success") {
+                alert("Save deleted successfully!");
+                // Remove the deleted save from the user's saves array
+                this.user.saves = this.user.saves.filter(save => save.id != saveId);
+                return true;
+            } else {
+                alert(result.message || "An error occurred while deleting the save.");
+                return false;
+            }
         } catch (error) {
             console.error("Error during delete:", error);
             alert("An error occurred while deleting the save. Please try again.");
+            return false;
         }
     }
 }

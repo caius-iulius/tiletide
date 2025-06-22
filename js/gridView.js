@@ -84,8 +84,14 @@ export class GridView {
     }
 
     loadSave(save) {
+        console.log("Loading save", save);
+        let newGrid = new Grid(
+            save.grid.rows,
+            save.grid.cols,
+            (i, j) => save.grid.grid[i][j]
+        )
         this.saveNameInput.value = save.name;
-        this.grid = save.grid;
+        this.grid = newGrid;
         this.gridNumRowsInput.value = this.grid.rows;
         this.gridNumColsInput.value = this.grid.cols;
         this.tileLengthInput.value = save.tileLength;
@@ -103,7 +109,7 @@ export class GridView {
     getSave() {
         return new Save(
             this.saveNameInput.value,
-            this.grid, //attenzione alla grid, problemi di mutabilità
+            this.grid,
             parseInt(this.tileLengthInput.value),
             this.wrapRowsCheckbox.checked,
             this.wrapColsCheckbox.checked,

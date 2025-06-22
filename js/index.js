@@ -81,7 +81,7 @@ const palette = [
     createColor(204, 0, 255),     // Viola
 ]
 
-let save = new Save("Default Save", grid6, 5, true, true, palette);
+let INITIAL_SAVE = new Save("Default Save", grid6, 5, true, true, palette);
 export let waveView = undefined;
 export let gridView = undefined;
 export let userView = undefined;
@@ -96,7 +96,7 @@ function init() {
 
     // Initialize WaveView
     waveView = new WaveView(
-        save,
+        INITIAL_SAVE,
         canvas,
         document.getElementById("wave-controls"),
         document.getElementById("name-display"),
@@ -114,14 +114,15 @@ function init() {
 
     // Initialize GridView
     gridView = new GridView(
-        save,
+        INITIAL_SAVE,
         canvas,
         document.getElementById("grid-controls"),
         document.getElementById("save-name-input"),
         document.getElementById("save-button"),
-        (save) => {
-            console.log("saving", save);
-            alert(`Save functionality not implemented for ${save.name}`);
+        async (save) => {
+            console.log("saving", JSON.stringify(save.toJSON()));
+            await apiContext.save(save.name, JSON.stringify(save.toJSON()));
+            userView.renderProfile();
         },
         colorGrid,
         document.getElementById("grid-num-rows"),
@@ -137,10 +138,15 @@ function init() {
     // Initialize UserView
     userView = new UserView(
         apiContext,
-        (id, newSave) => {
-            save = newSave;
+        save => {
             gridView.loadSave(save);
             waveView.loadSave(save);
+
+            if(gridView.hidden) {
+                waveView.wave.render();
+            } else {
+                gridView.gridCanvas.render();
+            }
         },
         document.getElementById("signup-form"),
         document.getElementById("login-form"),
@@ -157,8 +163,7 @@ function init() {
     });
 
     toWaveButton.addEventListener("click", () => {
-        save = gridView.getSave();
-        waveView.loadSave(save);
+        waveView.loadSave(gridView.getSave());
 
         gridView.hide();
         waveView.show();

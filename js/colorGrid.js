@@ -19,8 +19,6 @@ export class ColorGrid {
     }
 
     selectColor(index) {
-        console.log("selecting", index);
-
         if (this.selectedColor !== null) {
             this.cells[this.selectedColor].classList.remove('color-selected');
         }

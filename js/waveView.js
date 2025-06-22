@@ -134,7 +134,6 @@ export class WaveView {
     }
 
     playGame() {
-        console.log("Starting game with interval:", this.interval);
         this.playing = setInterval(() => this.render(), this.interval);
 
         this.numRowsInput.disabled = true;

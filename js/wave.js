@@ -196,13 +196,16 @@ export class WaveCanvas extends Wave {
             this.ctx.fillStyle = getColorStyle(color);
         }
 
+        const rows = this.tileset.wrap_rows ? this.rows : this.rows - 1;
+        const cols = this.tileset.wrap_cols ? this.cols : this.cols - 1;
+
         const tile_size = Math.floor(Math.min(
-            this.canvas.width / this.cols,
-            this.canvas.height / this.rows
+            this.canvas.width / cols,
+            this.canvas.height / rows
         ));
 
-        const width_bias = Math.floor((this.canvas.width - tile_size * this.cols) / 2);
-        const height_bias = Math.floor((this.canvas.height - tile_size * this.rows) / 2);
+        const width_bias = Math.floor((this.canvas.width - tile_size * cols) / 2);
+        const height_bias = Math.floor((this.canvas.height - tile_size * rows) / 2);
 
         this.ctx.fillRect(width_bias + col * tile_size, height_bias + row * tile_size, tile_size, tile_size);
     }

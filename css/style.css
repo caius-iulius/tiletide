@@ -4,33 +4,38 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #11111b;
+    color: #cdd6f4;
 }
 
 #controls {
     width: 25%;
-    background-color: #f0f0f0;
+    background-color: #181825;
     padding: 10px;
     box-sizing: border-box;
 }
 
 #slate {
     width: 50%;
-    background-color: #ffffff;
+    background-color: #11111b;
     padding: 10px;
     box-sizing: border-box;
 }
 
 #user-panel {
     width: 25%;
-    background-color: #f0f0f0;
+    background-color: #181825;
     padding: 10px;
     box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 canvas {
     display: block;
     margin: 0 auto;
-    background-color: #ffffff;
+    background-color: #181825;
 }
 
 #color-grid {
@@ -44,11 +49,11 @@ canvas {
     width: 50px;
     height: 50px;
     cursor: pointer;
-    border: 1px solid white;
+    border: 1px solid #6c7086;
 }
 
 .color-selected {
-    border: 1px solid black;
+    border: 1px solid #f9e2af;
 }
 
 .saves-container {
@@ -61,4 +66,95 @@ canvas {
 .save-card {
     width: 150px;
     word-wrap: break-word;
+}
+
+/* Button styles */
+button {
+    background-color: #313244;
+    color: #cdd6f4;
+    border: 1px solid #585b70;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #89b4fa;
+    color: #11111b;
+    border-color: #89b4fa;
+}
+
+button:active {
+    background-color: #a6e3a1;
+    color: #11111b;
+}
+
+button:disabled {
+    background-color: #181825;
+    color: #585b70;
+    cursor: not-allowed;
+}
+
+/* Link styles */
+a {
+    color: #89b4fa;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #a6e3a1;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #cba6f7;
+}
+
+/* Input styles */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    background-color: #313244;
+    color: #cdd6f4;
+    border: 1px solid #585b70;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+    margin-bottom: 10px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #89b4fa;
+    box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #585b70;
+}
+
+/* Remove spinner arrows from number inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }

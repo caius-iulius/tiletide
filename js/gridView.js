@@ -3,9 +3,12 @@ import { EditableGridCanvas } from "./gridCanvas.js";
 import { Save } from "./save.js";
 
 export class GridView {
-    constructor(save, canvas, gridControls, colorGrid, gridNumRowsInput, gridNumColsInput, tileLengthInput, wrapRowsCheckbox, wrapColsCheckbox
+    constructor(save, canvas, gridControls, saveNameInput, saveButton, saveCallback, colorGrid, gridNumRowsInput, gridNumColsInput, tileLengthInput, wrapRowsCheckbox, wrapColsCheckbox
     ) {
         this.canvas = canvas;
+        this.saveNameInput = saveNameInput;
+        this.saveButton = saveButton;
+        this.saveCallback = saveCallback;
         this.gridControls = gridControls;
         this.colorGrid = colorGrid;
         this.gridNumRowsInput = gridNumRowsInput;
@@ -16,12 +19,6 @@ export class GridView {
 
         this.grid = undefined;
         this.loadSave(save);
-
-        this.gridCanvas = new EditableGridCanvas(
-            this.grid,
-            this.canvas,
-            this.colorGrid
-        );
 
         canvas.addEventListener('mousedown', (e) => {
             if(this.hidden) return;
@@ -48,6 +45,15 @@ export class GridView {
 
         this.gridNumRowsInput.addEventListener("change", () => { this.resizeEvent() });
         this.gridNumColsInput.addEventListener("change", () => { this.resizeEvent() });
+
+        this.saveButton.addEventListener("click", () => {
+            const save = this.getSave();
+            if (save.name.length < 1) {
+                alert("Please enter a name for the save.");
+                return;
+            }
+            this.saveCallback(save);
+        });
 
         this.hidden = true;
     }
@@ -78,17 +84,25 @@ export class GridView {
     }
 
     loadSave(save) {
+        this.saveNameInput.value = save.name;
         this.grid = save.grid;
         this.gridNumRowsInput.value = this.grid.rows;
         this.gridNumColsInput.value = this.grid.cols;
         this.tileLengthInput.value = save.tileLength;
         this.wrapRowsCheckbox.checked = save.wrapRows;
         this.wrapColsCheckbox.checked = save.wrapCols;
+
+        this.gridCanvas = new EditableGridCanvas(
+            this.grid,
+            this.canvas,
+            this.colorGrid
+        );
         // this.colorGrid.setColors(save.palette);
     }
 
     getSave() {
         return new Save(
+            this.saveNameInput.value,
             this.grid, //attenzione alla grid, problemi di mutabilità
             parseInt(this.tileLengthInput.value),
             this.wrapRowsCheckbox.checked,

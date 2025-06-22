@@ -1,7 +1,8 @@
 import { Grid, Tileset } from './tiles.js';
 
 export class Save {
-    constructor(grid, tileLength, wrapRows, wrapCols, palette) {
+    constructor(name, grid, tileLength, wrapRows, wrapCols, palette) {
+        this.name = name;
         this.grid = grid;
         this.tileLength = tileLength;
         this.wrapRows = wrapRows;
@@ -11,6 +12,7 @@ export class Save {
 
     toJSON() {
         return {
+            name: this.name,
             grid: this.grid.grid,
             tileLength: this.tileLength,
             wrapRows: this.wrapRows,
@@ -21,6 +23,7 @@ export class Save {
 
     static fromJSON(json) {
         return new Save(
+            json.name,
             new Grid(json.grid.length, json.grid[0].length, (i, j) => json.grid[i][j]),
             json.tileLength,
             json.wrapRows,

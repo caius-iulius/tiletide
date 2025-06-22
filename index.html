@@ -10,6 +10,8 @@
 <body class="column">
     <div id="controls">
         <div id="wave-controls" hidden>
+            <p id="name-display"></p>
+
             <canvas id="grid-canvas" width="200" height="200"></canvas>
 
             <p>
@@ -38,6 +40,8 @@
         </div>
 
         <div id="grid-controls" hidden>
+            <input type="text" id="save-name-input" placeholder="Nome">
+            <button id="save-button">SAVE</button>
             <p>IMPOSTAZIONI TILE</p>
             <div id="color-grid"></div>
             <label for="grid-num-rows">Righe:</label>

@@ -27,29 +27,6 @@ const ARR = [
 const grid2 = new Grid(4, 4, (i, j) => ARR[i][j]);
 const tiles2 = new Tileset(grid2, 2, 2, true, true);
 
-const CROSSOVER = [
-    [1,1,0,1,1],
-    [1,1,1,1,1],
-    [0,0,0,0,0],
-    [1,1,1,1,1],
-    [1,1,0,1,1],
-]
-
-const grid3 = new Grid(5, 5, (i, j) => CROSSOVER[i][j]);
-const tiles3 = new Tileset(grid3, 3, 3, true, true);
-
-const KNOT = [
-    [0,0,0,0,0,0,0],
-    [0,0,0,1,1,1,0],
-    [0,0,0,1,0,1,0],
-    [0,1,1,1,1,1,0],
-    [0,1,0,1,0,0,0],
-    [0,1,1,1,0,0,0],
-    [0,0,0,0,0,0,0]
-]
-const grid4 = new Grid(7, 7, (i, j) => KNOT[i][j]);
-const tiles4 = new Tileset(grid4, 3, 3, true, true);
-
 const CURVES = [
     [5,5,5,5,5,5,5,5,5],
     [5,6,6,6,6,6,6,6,5],
@@ -63,6 +40,24 @@ const CURVES = [
 ]
 const grid5 = new Grid(9, 9, (i, j) => CURVES[i][j]);
 const tiles5 = new Tileset(grid5, 3, 3, true, true);
+
+const CROSSOVER2 = [
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,0,0,0,0,0,0,0,1,0,0,0],
+    [1,1,1,1,1,1,1,0,1,0,1,1],
+    [0,0,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0],
+    [0,1,0,0,0,0,0,0,0,0,0,0],
+    [0,1,0,1,1,1,1,1,1,1,1,1],
+    [0,1,0,0,0,0,0,0,0,0,0,0],
+    [0,1,0,0,0,0,0,0,1,0,0,0]
+];
+
+const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
+const tiles6 = new Tileset(grid6, 5, 5, true, true);
 
 const palette = [
     createColor(0, 0, 0),         // Nero
@@ -86,26 +81,7 @@ const palette = [
     createColor(204, 0, 255),     // Viola
 ]
 
-
-const CROSSOVER2 = [
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,0,0,0,0,0,0,0,1,0,0,0],
-    [1,1,1,1,1,1,1,0,1,0,1,1],
-    [0,0,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0],
-    [0,1,0,0,0,0,0,0,0,0,0,0],
-    [0,1,0,1,1,1,1,1,1,1,1,1],
-    [0,1,0,0,0,0,0,0,0,0,0,0],
-    [0,1,0,0,0,0,0,0,1,0,0,0]
-];
-
-const grid6 = new Grid(12, 12, (i, j) => CROSSOVER2[i][j]);
-const tiles6 = new Tileset(grid6, 5, 5, true, true);
-
-let save = new Save(grid6, 5, true, true, palette);
+let save = new Save("Default Save", grid6, 5, true, true, palette);
 export let waveView = undefined;
 export let gridView = undefined;
 export let userView = undefined;
@@ -123,6 +99,7 @@ function init() {
         save,
         canvas,
         document.getElementById("wave-controls"),
+        document.getElementById("name-display"),
         gridCanvas,
         document.getElementById("play-button"),
         document.getElementById("pause-button"),
@@ -140,6 +117,12 @@ function init() {
         save,
         canvas,
         document.getElementById("grid-controls"),
+        document.getElementById("save-name-input"),
+        document.getElementById("save-button"),
+        (save) => {
+            console.log("saving", save);
+            alert(`Save functionality not implemented for ${save.name}`);
+        },
         colorGrid,
         document.getElementById("grid-num-rows"),
         document.getElementById("grid-num-cols"),
@@ -154,6 +137,11 @@ function init() {
     // Initialize UserView
     userView = new UserView(
         apiContext,
+        (id, newSave) => {
+            save = newSave;
+            gridView.loadSave(save);
+            waveView.loadSave(save);
+        },
         document.getElementById("signup-form"),
         document.getElementById("login-form"),
         document.getElementById("user-profile"),

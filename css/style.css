@@ -50,3 +50,15 @@ canvas {
 .color-selected {
     border: 1px solid black;
 }
+
+.saves-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.save-card {
+    width: 150px;
+    word-wrap: break-word;
+}

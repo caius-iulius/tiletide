@@ -26,22 +26,29 @@ export class Wave extends Grid {
         });
 
         this.tileset = tileset;
+        this.initial_entropy = this.total_entropy();
+    }
+
+    init() {
+        console.log("initializing wave");
 
         const borders = [];
-        if(!tileset.wrap_rows) {
-            for (let i = 0; i < cols; i++) {
-                borders.push([rows, i]);
+
+        if(!this.tileset.wrap_rows) {
+            for (let i = 0; i < this.cols; i++) {
+                borders.push([this.rows - 1, i]);
             }
         }
-        if(!tileset.wrap_cols) {
-            for (let i = 0; i < rows; i++) {
-                borders.push([i, cols]);
+        if(!this.tileset.wrap_cols) {
+            for (let i = 0; i < this.rows; i++) {
+                borders.push([i, this.cols - 1]);
             }
         }
 
-        this.propagate(borders);
+        if (!this.propagate(borders)) return false;
 
         this.initial_entropy = this.total_entropy();
+        return true;
     }
 
     // Calcola la Shannon entropy delle possibilità di una tile

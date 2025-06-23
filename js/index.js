@@ -73,7 +73,8 @@ function init() {
         document.getElementById("num-cols"),
         document.getElementById("num-rows"),
         document.getElementById("entropy-display"),
-        document.getElementById("entropy-progress")
+        document.getElementById("entropy-progress"),
+        document.getElementById("wave-state-message")
     );
 
     // Initialize GridView
@@ -99,9 +100,9 @@ function init() {
         save => {
             saveNameInput.value = save.name;
             gridView.loadSave(save);
-            waveView.loadSave(save);
 
             if(gridView.hidden) {
+                waveView.loadSave(save);
                 waveView.wave.render();
             } else {
                 gridView.gridCanvas.render();

@@ -1,5 +1,4 @@
 import { WaveCanvas } from "./wave.js";
-import { male_print_wave_multi } from "./debug.js";
 import { GridCanvas } from "./gridCanvas.js";
 
 function calculateDelay(sliderValue) {
@@ -7,7 +6,7 @@ function calculateDelay(sliderValue) {
 }
 
 export class WaveView {
-    constructor(initialSave, canvas, waveControls, gridCanvasElement, playButton, pauseButton, stepButton, stopButton, speedSlider, numColsInput, numRowsInput, entropyDisplay, entropyProgress) {
+    constructor(initialSave, canvas, waveControls, gridCanvasElement, playButton, pauseButton, stepButton, stopButton, speedSlider, numColsInput, numRowsInput, entropyDisplay, entropyProgress, waveStateMessage) {
         this.canvas = canvas;
         this.waveControls = waveControls;
         this.gridCanvasElement = gridCanvasElement;
@@ -22,6 +21,7 @@ export class WaveView {
         this.numRowsInput = numRowsInput;
         this.entropyDisplay = entropyDisplay;
         this.entropyProgress = entropyProgress;
+        this.waveStateMessage = waveStateMessage;
 
         this.started = false;
         this.playing = null;
@@ -37,8 +37,8 @@ export class WaveView {
             if (this.playing) return;
 
             if (!this.started) {
-                this.initWave();
                 this.started = true;
+                this.initWave();
                 this.wave.render();
                 this.updateView();
             }
@@ -83,6 +83,11 @@ export class WaveView {
             this.canvas,
             this.palette
         );
+        if(this.wave.init()) {
+            this.waveStateMessage.innerHTML = "";
+        } else {
+            this.waveStateMessage.innerHTML = "Failed to initialize wave. Please check your tileset and grid size.";
+        }
     }
 
     loadSave(save) {
@@ -96,6 +101,7 @@ export class WaveView {
         );
         gridCanvas.render();
         this.initWave();
+        this.updateView();
     }
 
     setTileset(tileset, palette) {
@@ -106,12 +112,15 @@ export class WaveView {
     updateView() {
         let entropy = this.wave.total_entropy();
         this.entropyDisplay.textContent = `Entropy: ${entropy.toFixed(2)} / ${this.wave.initial_entropy.toFixed(2)} bits`;
-        this.entropyProgress.value = 1 - (entropy / this.wave.initial_entropy);
+        this.entropyProgress.value = this.wave.initial_entropy > 0 ? 1 - (entropy / this.wave.initial_entropy) : 1;
     }
 
     renderStep() {
         let choice = this.wave.choose();
-        if (!choice) return false;
+        if (!choice) {
+            this.waveStateMessage.innerHTML = "Wave is fully collapsed. Generation complete!";
+            return false;
+        }
 
         this.wave.observe(...choice);
 
@@ -120,8 +129,7 @@ export class WaveView {
         this.updateView();
 
         if (!success) {
-            male_print_wave_multi(this.wave);
-            console.log();
+            this.waveStateMessage.innerHTML = "Ran into a contradiction, the wave cannot be collapsed further.";
             return false;
         }
 

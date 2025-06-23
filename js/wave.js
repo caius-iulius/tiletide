@@ -127,11 +127,10 @@ export class Wave extends Grid {
                 // Filtra le possibilità del vicino
                 neigh_tile.possibilities = neigh_tile.possibilities.filter((t) => {
 
+
                     // Cerca almeno una possibilità della propria tile compatibile con quella del vicino attualmente in esame
-                    for (let j = 0; j < tile_possibilities.length; j++) {
-                        if(this.tileset.get_compatibles(tile_possibilities[j], i).includes(t)) {
-                            return true;
-                        }
+                    if(this.tileset.are_tiles_compatible(tile_possibilities, i, t)) {
+                        return true;
                     }
 
                     // Se arrivo qui la possibilità del vicino esaminata non è compatibile

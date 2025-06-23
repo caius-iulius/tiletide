@@ -53,6 +53,7 @@ export class Grid {
 }
 
 export const DIRECTIONS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+export const INVERSE_DIRECTIONS = [1, 0, 3, 2];
 export const UP = 0;
 export const DOWN = 1;
 export const LEFT = 2;
@@ -139,8 +140,15 @@ export class Tileset {
         }
     }
 
-    get_compatibles(idx, dir) {
-        return (idx === null) ? this.border[dir] : this.tiles[idx].compatible[dir];
+    are_tiles_compatible(srcs, dir, tgt) {
+        const new_dir = INVERSE_DIRECTIONS[dir];
+        const compatibilities = (tgt === null) ? this.border[new_dir] : this.tiles[tgt].compatible[new_dir];
+
+        for (let i = 0; i < srcs.length; i++) {
+            if (compatibilities.includes(srcs[i])) return true;
+        }
+
+        return false;
     }
 
     get_weight(idx) {

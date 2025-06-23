@@ -31,7 +31,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Delete the save (only if it belongs to the current user)
-    $stmt = $connection->prepare("DELETE FROM saves WHERE id = ? AND user_id = ?");
+    $stmt = $connection->prepare("DELETE FROM saves WHERE save_id = ? AND user_id = ?");
     $stmt->bind_param("ii", $saveId, $userId);
 
     if($stmt->execute()) {

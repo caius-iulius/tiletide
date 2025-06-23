@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="./css/style.css">
     <script type="module" src="./js/index.js"></script>
 </head>
-<body class="column">
-    <div id="controls">
+<body>
+    <div id="controls" class="sidebar">
         <h2>TileTide</h2>
         <div id="save-form">
             <input type="text" id="save-name-input" placeholder="Nome">
@@ -67,7 +67,7 @@
     <div id="slate">
         <canvas id="wave-canvas" width="600" height="600"></canvas>
     </div>
-    <div id="user-panel">
+    <div id="user-panel" class="sidebar">
         <form id="signup-form" class="sidebar-column" hidden>
             <h3>Signup</h3>
             <label for="new-username">Username</label>

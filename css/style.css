@@ -34,11 +34,13 @@ body {
     color: var(--text-primary);
 }
 
-#controls {
+.sidebar {
     width: 25%;
     background-color: var(--bg-secondary);
     padding: 10px;
     box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 #slate {
@@ -46,15 +48,6 @@ body {
     background-color: var(--bg-primary);
     padding: 10px;
     box-sizing: border-box;
-}
-
-#user-panel {
-    width: 25%;
-    background-color: var(--bg-secondary);
-    padding: 10px;
-    box-sizing: border-box;
-    height: 100vh;
-    overflow-y: auto;
 }
 
 .sidebar-column {

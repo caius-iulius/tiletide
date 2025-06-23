@@ -92,7 +92,7 @@ export class UserView {
         this.userProfile.innerHTML = ""; // Clear previous content
 
         const welcomeMessage = document.createElement("h2");
-        welcomeMessage.textContent = `Welcome, ${"TEST"}!`;
+        welcomeMessage.textContent = `Welcome, ${this.apiContext.user.username}!`;
         this.userProfile.appendChild(welcomeMessage);
 
         const savesTitle = document.createElement("h3");

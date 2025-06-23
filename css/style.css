@@ -7,12 +7,12 @@
     --text-secondary: #585b70;
     --border-primary: #585b70;
     --border-secondary: #6c7086;
-    
+
     /* Accent colors */
     --accent-blue: #89b4fa;
     --accent-green: #a6e3a1;
     --accent-yellow: #f9e2af;
-    
+
     /* Interactive states */
     --hover-bg: var(--accent-blue);
     --hover-text: var(--bg-primary);
@@ -79,6 +79,10 @@ canvas {
 
 #wave-canvas{
     background-color: var(--bg-primary);
+}
+
+#save-form {
+    margin-bottom: 15px;
 }
 
 #color-grid {

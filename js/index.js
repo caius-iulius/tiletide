@@ -118,11 +118,11 @@ function init() {
     );
 
     saveButton.addEventListener("click", async () => {
-        const save = gridView.getSave();
-        if (save.name.length < 1) {
-            alert("Please enter a name for the save.");
+        if(!saveNameInput.checkValidity()) {
+            alert("Invalid save name. Please use 1-50 characters: letters, numbers, spaces, and !#$%&*^_-~ only.");
             return;
         }
+        const save = gridView.getSave();
         console.log("saving", JSON.stringify(save.toJSON()));
         const success = await apiContext.save(save.name, JSON.stringify(save.toJSON()));
         if(success) userView.renderProfile();

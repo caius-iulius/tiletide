@@ -11,7 +11,7 @@
     <div id="controls" class="sidebar">
         <h2>TileTide</h2>
         <div id="save-form">
-            <input type="text" id="save-name-input" placeholder="Nome">
+            <input type="text" id="save-name-input" placeholder="Nome" required pattern="^[A-Za-z0-9\s!#$%&*^_\-~]{1,50}$">
             <button id="save-button">SAVE</button>
         </div>
 
@@ -65,6 +65,7 @@
             </div>
             <button id="to-wave-button">TRY</button>
         </div>
+        <p class="sidebar-footer">Don't know where to start? <a href="./guide.html">Read the guide</a></p>
     </div>
     <div id="slate">
         <canvas id="wave-canvas" width="600" height="600"></canvas>
@@ -73,8 +74,10 @@
         <form id="signup-form" class="sidebar-column" hidden>
             <h3>Signup</h3>
             <label for="new-username">Username</label>
+            <small>3-30 characters: letters, numbers, and !#$%&*^_-~ only</small>
             <input type="text" id="new-username" name="username" required pattern="^[A-Za-z0-9!#$%&*^_-~]{3,30}$" placeholder="New username">
             <label for="new-password">Password</label>
+            <small>5-30 characters: letters, numbers, and !#$%&*^_-~ only</small>
             <input type="password" id="new-password" name="password" required pattern="^[A-Za-z0-9!#$%&*^_-~]{5,30}$" placeholder="New password">
             <button type="submit">Sign Up</button>
             <p>Already have an account? <a href="#" id="show-login-button">Login</a></p>
@@ -85,7 +88,7 @@
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required pattern="^[A-Za-z0-9!#$%&*^_-~]{3,30}$" placeholder="Username">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required pattern="^[A-Za-z0-9!#$%&*^_-~]{5,30}$" placeholder="Password">
+            <input type="password" id="password" name="password" required placeholder="Password">
             <button type="submit">Login</button>
             <p>Don't have an account? <a href="#" id="show-signup-button">Sign Up</a></p>
         </form>

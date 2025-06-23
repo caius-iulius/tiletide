@@ -90,7 +90,6 @@ export class ApiContext {
 
             console.log(this.user);
 
-            alert("Save successful!");
             return responseData;
         } catch (error) {
             console.error("Error during save:", error);
@@ -119,11 +118,10 @@ export class ApiContext {
             });
 
             const result = await response.json();
-            
+
             if (result.status === "success") {
-                alert("Save deleted successfully!");
-                // Remove the deleted save from the user's saves array
-                this.user.saves = this.user.saves.filter(save => save.id != saveId);
+                // Remove the save from the user's saves
+                this.user.saves = this.user.saves.filter((s) => s.save_id !== saveId);
                 return true;
             } else {
                 alert(result.message || "An error occurred while deleting the save.");

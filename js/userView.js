@@ -74,11 +74,9 @@ export class UserView {
             console.log(`Deleting save: ${save.name}`);
 
             // Confirm deletion
-            if (confirm(`Are you sure you want to delete "${save.name}"? This action cannot be undone.}`)) {
+            if (confirm(`Are you sure you want to delete "${save.name}"? This action cannot be undone.`)) {
                 const success = await this.apiContext.delete(id);
-                if (success !== false) {
-                    // Remove the save from the user's saves
-                    this.apiContext.user.saves = this.apiContext.user.saves.filter((s) => s.save_id !== id);
+                if (success) {
                     // Refresh the profile view to show updated saves list
                     this.renderProfile();
                 }

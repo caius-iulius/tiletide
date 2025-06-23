@@ -1,13 +1,13 @@
 "use strict";
 
-import { Grid } from "./tiles.js";
-import { createColor } from "./color.js";
-import { ColorGrid } from "./colorGrid.js";
-import { WaveView } from "./waveView.js";
-import { GridView } from "./gridView.js";
-import { UserView } from "./userView.js";
-import { Save } from "./save.js";
-import { ApiContext } from "./apiContext.js";
+import { Grid } from "./lib/tiles.js";
+import { createColor } from "./render/color.js";
+import { ColorGrid } from "./render/colorGrid.js";
+import { WaveView } from "./views/waveView.js";
+import { GridView } from "./views/gridView.js";
+import { UserView } from "./views/userView.js";
+import { Save } from "./lib/save.js";
+import { ApiContext } from "./lib/apiContext.js";
 
 const PALETTE = [
     createColor(0, 0, 0),         // Nero
@@ -58,6 +58,8 @@ function init() {
 
     canvas.width = Math.floor(window.innerWidth * 0.47);
     canvas.height = Math.floor(window.innerHeight * 0.96);
+
+    saveNameInput.value = INITIAL_SAVE.name;
 
     // Initialize WaveView
     waveView = new WaveView(
@@ -127,7 +129,7 @@ function init() {
     });
 
     gridCanvas.addEventListener("click", () => {
-        if (waveView.started) return;
+        waveView.endGame();
 
         waveView.hide();
         gridView.show();

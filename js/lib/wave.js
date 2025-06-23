@@ -2,7 +2,7 @@
 
 import { Queue } from "./queue.js";
 import { Grid, DIRECTIONS } from "./tiles.js";
-import { createColor, getColorStyle, weighedColorSum } from "./color.js";
+import { createColor, getColorStyle, weighedColorSum } from "../render/color.js";
 
 export class Wave extends Grid {
     constructor(rows, cols, tileset) {

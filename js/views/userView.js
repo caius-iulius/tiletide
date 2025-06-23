@@ -1,5 +1,5 @@
-import { GridCanvas } from "./gridCanvas.js";
-import { Save } from "./save.js";
+import { GridCanvas } from "../render/gridCanvas.js";
+import { Save } from "../lib/save.js";
 
 export class UserView {
     constructor(apiContext, loadSaveCallback, signupForm, loginForm, userProfile, showLoginButton, showSignupButton) {

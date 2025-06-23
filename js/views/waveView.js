@@ -1,5 +1,5 @@
-import { WaveCanvas } from "./wave.js";
-import { GridCanvas } from "./gridCanvas.js";
+import { WaveCanvas } from "../lib/wave.js";
+import { GridCanvas } from "../render/gridCanvas.js";
 
 function calculateDelay(sliderValue) {
     return Math.round(1000 * Math.exp(-sliderValue / 200));

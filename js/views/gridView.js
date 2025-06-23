@@ -1,6 +1,6 @@
-import { Grid } from "./tiles.js";
-import { EditableGridCanvas } from "./gridCanvas.js";
-import { Save } from "./save.js";
+import { Grid } from "../lib/tiles.js";
+import { EditableGridCanvas } from "../render/gridCanvas.js";
+import { Save } from "../lib/save.js";
 
 export class GridView {
     constructor(save, canvas, saveNameInput, gridControls, colorGrid, gridNumRowsInput, gridNumColsInput, tileLengthInput, wrapRowsCheckbox, wrapColsCheckbox

@@ -49,6 +49,10 @@ document.addEventListener("DOMContentLoaded", init);
 function init() {
     const canvas = document.getElementById("wave-canvas");
     const colorGrid = new ColorGrid(document.getElementById("color-grid"), PALETTE);
+
+    const saveNameInput = document.getElementById("save-name-input");
+    const saveButton = document.getElementById("save-button");
+
     const toWaveButton = document.getElementById("to-wave-button");
     const gridCanvas = document.getElementById("grid-canvas");
 
@@ -60,7 +64,6 @@ function init() {
         INITIAL_SAVE,
         canvas,
         document.getElementById("wave-controls"),
-        document.getElementById("name-display"),
         gridCanvas,
         document.getElementById("play-button"),
         document.getElementById("pause-button"),
@@ -77,14 +80,8 @@ function init() {
     gridView = new GridView(
         INITIAL_SAVE,
         canvas,
+        saveNameInput,
         document.getElementById("grid-controls"),
-        document.getElementById("save-name-input"),
-        document.getElementById("save-button"),
-        async (save) => {
-            console.log("saving", JSON.stringify(save.toJSON()));
-            await apiContext.save(save.name, JSON.stringify(save.toJSON()));
-            userView.renderProfile();
-        },
         colorGrid,
         document.getElementById("grid-num-rows"),
         document.getElementById("grid-num-cols"),
@@ -100,6 +97,7 @@ function init() {
     userView = new UserView(
         apiContext,
         save => {
+            saveNameInput.value = save.name;
             gridView.loadSave(save);
             waveView.loadSave(save);
 
@@ -115,6 +113,17 @@ function init() {
         document.getElementById("show-login-button"),
         document.getElementById("show-signup-button")
     );
+
+    saveButton.addEventListener("click", async () => {
+        const save = gridView.getSave();
+        if (save.name.length < 1) {
+            alert("Please enter a name for the save.");
+            return;
+        }
+        console.log("saving", JSON.stringify(save.toJSON()));
+        const success = await apiContext.save(save.name, JSON.stringify(save.toJSON()));
+        if(success) userView.renderProfile();
+    });
 
     gridCanvas.addEventListener("click", () => {
         if (waveView.started) return;

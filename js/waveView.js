@@ -7,10 +7,9 @@ function calculateDelay(sliderValue) {
 }
 
 export class WaveView {
-    constructor(initialSave, canvas, waveControls, saveNameElement, gridCanvasElement, playButton, pauseButton, stepButton, stopButton, speedSlider, numColsInput, numRowsInput, entropyDisplay, entropyProgress) {
+    constructor(initialSave, canvas, waveControls, gridCanvasElement, playButton, pauseButton, stepButton, stopButton, speedSlider, numColsInput, numRowsInput, entropyDisplay, entropyProgress) {
         this.canvas = canvas;
         this.waveControls = waveControls;
-        this.saveNameElement = saveNameElement;
         this.gridCanvasElement = gridCanvasElement;
         this.playButton = playButton;
         this.pauseButton = pauseButton;
@@ -90,7 +89,6 @@ export class WaveView {
         this.endGame();
         this.tileset = save.getTileset();
         this.palette = save.palette;
-        this.saveNameElement.textContent = save.name;
         const gridCanvas = new GridCanvas(
             save.grid,
             this.gridCanvasElement,

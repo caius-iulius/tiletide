@@ -10,16 +10,19 @@
 <body class="column">
     <div id="controls">
         <h2>TileTide</h2>
-        <div id="wave-controls" class="sidebar-column" hidden>
-            <div id="name-display"></div>
+        <div id="save-form">
+            <input type="text" id="save-name-input" placeholder="Nome">
+            <button id="save-button">SAVE</button>
+        </div>
 
+        <div id="wave-controls" class="sidebar-column" hidden>
             <canvas id="grid-canvas" width="200" height="200"></canvas>
 
             <div>
                 <label for="num-rows">Rows</label>
-                <input type="number" id="num-rows" min="1" max="300" value="10">
+                <input type="number" id="num-rows" min="1" max="300" value="20">
                 <label for="num-cols">Columns</label>
-                <input type="number" id="num-cols" min="1" max="300" value="10">
+                <input type="number" id="num-cols" min="1" max="300" value="20">
             </div>
 
             <div>
@@ -41,10 +44,6 @@
         </div>
 
         <div id="grid-controls" class="sidebar-column" hidden>
-            <div>
-                <input type="text" id="save-name-input" placeholder="Nome">
-                <button id="save-button">SAVE</button>
-            </div>
             <div id="color-grid"></div>
             <div>
                 <label for="grid-num-rows">Rows</label>

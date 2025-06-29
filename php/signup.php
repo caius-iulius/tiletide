@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Insert new user
         $stmt = $connection->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $stmt->bind_param("ss", $username, $hashedPassword);
 
         if ($stmt->execute()) {

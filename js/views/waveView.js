@@ -29,8 +29,9 @@ export class WaveView {
         this.wave = undefined;
         this.tileset = undefined;
         this.palette = undefined;
+        // Flag to indicate if the wave was just loaded, it will be used to prevent unnecessary re-initialization
+        this.justLoaded = false;
         this.loadSave(initialSave);
-        this.initWave();
 
         //add event listeners
         this.playButton.addEventListener("click", () => {
@@ -38,7 +39,10 @@ export class WaveView {
 
             if (!this.started) {
                 this.started = true;
-                this.initWave();
+
+                if (!this.justLoaded) this.initWave();
+                this.justLoaded = false;
+
                 this.wave.render();
                 this.updateView();
             }
@@ -102,6 +106,7 @@ export class WaveView {
         gridCanvas.render();
         this.initWave();
         this.updateView();
+        this.justLoaded = true;
     }
 
     setTileset(tileset, palette) {

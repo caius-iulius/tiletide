@@ -1,22 +1,6 @@
 # TileTide
 
-**NOTA PER L'ESAMINATORE**: Nel database è presente un account demo con le credenziali:
-- **Username**: test
-- **Password**: testtest
-
 A web-based Wave Function Collapse (WFC) pattern generator that creates infinite, coherent patterns from small input samples.
-
-## Solo per studenti UNIPI
-**Mie osservazioni**: A Vecchio piacciono, nell'ordine:
-
-- le idee originali
-- i featureset minimali, ma che funzionano
-- i giochi interattivi
-- la grafica semplice ma efficace
-
-Per cui, secondo me, l'idea e la realizzazione delle funzionalità di base sono molto più importanti del numero di righe nel vostro progetto.
-
-Non ho altro da dire. Per il resto seguite religiosamente le indicazioni di [Fabio Gulmini](https://github.com/Guray00/IngegneriaInformatica/blob/40738eae8fab1cdf4733f50019b4de1895c29f6c/SECONDO%20ANNO/I%20SEMESTRE/Progettazione%20Web/Esempi%20progetti/Fabio%20Gulmini%20(30%20e%20lode)/README.md).
 
 ## What is TileTide?
 
